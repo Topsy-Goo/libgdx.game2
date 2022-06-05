@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.5" orientation="orthogonal" renderorder="right-down" width="146" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="13">
+ <tileset firstgid="1" name="rLJjmOe" tilewidth="16" tileheight="16" tilecount="1680" columns="56">
+  <image source="rLJjmOe.png" width="896" height="480"/>
+ </tileset>
+ <tileset firstgid="1681" name="pngwing.com" tilewidth="16" tileheight="16" tilecount="2784" columns="48">
+  <image source="pngwing.com.png" width="768" height="928"/>
+ </tileset>
+ <tileset firstgid="4465" name="sheet_2_0" tilewidth="16" tileheight="16" tilecount="8192" columns="128">
+  <image source="sheet_2_0.png" width="2048" height="1024"/>
+ </tileset>
+ <tileset firstgid="12657" name="teksturi-dlya-platformera-17" tilewidth="16" tileheight="16" tilecount="5400" columns="90">
+  <image source="teksturi-dlya-platformera-17.png" width="1440" height="960"/>
+ </tileset>
+ <tileset firstgid="18057" name="pngwing.com (46a)" tilewidth="16" tileheight="16" tilecount="608" columns="16">
+  <image source="pngwing.com (46a).png" width="256" height="608"/>
+ </tileset>
+ <tileset firstgid="18665" name="pngwing.com (47)" tilewidth="16" tileheight="16" tilecount="8192" columns="128">
+  <image source="pngwing.com (47).png" width="2048" height="1024"/>
+ </tileset>
+ <layer id="7" name="листва" width="146" height="60">
+  <data encoding="base64" compression="zlib">
+   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
+  </data>
+ </layer>
+ <layer id="1" name="земля" width="146" height="60">
+  <data encoding="base64" compression="zlib">
+   eJztm0lwFFUch3umZ9iyTNyVBAIJcBdIJiuuqCwuBBAF9KZe1CyQAFmgWS4CMSQBPOlNgawoR0VCiCKJywmV5RbUKj1plVaRBOLXNdM1nU4mqelMz2SY/1f15b1+nV6m55fX/d5MFEUQBEEQBEEQBGFmccetKHdxFBVVUVzoVuN9VkKikUdm8tGPBViIRZIjIQpUSY6ShkIcdfGD+9FIsNR1YTHVEizFVXE8R2HmU4l+MlOAK4OlbiHuYN1OrMYah46/leNsw+34Br7pduhAgqNc4N7Tgxex11RestT7HLpHtZCbVjyOJ/Ck5EiwQT+5GcDvJUfCNFHp6zz4Axn6MUyOmj30Xdjqie25CYnDIBm6hV6chbNxDs7FeZiCV8hPPw5IjoQwZJKNLFyAq8jME/gkPoVP4zP4LK6WeYSY4PQYftjlzH43kp9NuBlryMou3I17sBbrsB4bJEcxwakx/ONsvxxXODQ3cIT8HMVOctIlWYk7To3ho7XfcJ/BGc/Zv+HvkiNhCsJ9BleMJWrg+WihPEcLU/AeWXkfy7ECK9XAZ3A7cKcaeD56VXIk2KSdDHVgIxn6UHIk2MSYP/qGDH0rOYoatxlbD7mcG2fHi1aPorVgM5rbzfNH+vPRT5Y5bZeXl4+qN4Ynew/g9Dg7XgyQn368oufINF4zzx/pz0fW+exC8lOExZKjiIj3Z/BOMdV4rVSdfD5bEHSmGq9Vq6H5bEGIFGO8Zsxnd0uOBBsY4zVjPvuPJMvREsZS2bgIFwc16tZ1OZgbbEfN3PYxz5afJPF41zpey06ya7GdDGzB1/D1oEbdum4rbgu2o2Zuu8p1+znJrp1BmWf8eG1Lkl2L42SgCY9hc1Cjbl3Xgq3BdtTMbWmMZ9OTdEx72BP6vN+Yz25K4BwN8n7eckVW2tlGL9emB1S5Xh704qxpXDv9e0dFSmiO0vgOkjGPqc9fuk1zmNbS7pym9bhXU+lX8Rf8Fa/hdbyBN1Mn3kcvr/sS9nlC89mXEzhHmVznLHdkpZ1t9FLP0Px0paeY61WCpfr3AKdx7fTvHVUpoTlK4ztIxjymPn9ZZJrDtJZ25zStx/Wm8feAs3EOzsV5mIKpaRPvY4jXPYwjeAfv4mgC5yiW/dFljvddFM/9DLZhO3ZgOZmpwHP0Ae9SVmKVO7TeWnZiVxSOm0dW8tGP/3Ls/8L0QWaWcz9fgSsxD/PRn8D3+Fj2R6P6AV3RO/dr7Os6/qnfI9h/nztQH0wNlIYbaC9zj237C2+w7U0b53MRe5XQMd8iP2/jO7h0kiw9lKIoD+Mj+Cg+hvMxE7NwAS7EbFyEizEHc3EJLsVlKdO9as4Qy/7IjwVRzNF9vIf3u0P7H6Ge4x3vB7QfNq0zcvQAbQ/a+L+x2ziEw+7AMU+QnZP4EW4OZmnZBPez1WTgOXweX8A1uBbX4Xp8EV/Cl/EV3IBluBE3YaOP53FswmO+scuNvvHrI/ldlrWjaGebIxjL/qic97oiijlaoz9zmfZvzkg4jT5Er6+jXG8jR3apJgs1uAt34x6sxTqsxwbci/tQw/14AA/iITzPe/c1XsAe39jl877x6yP5XZa1r9DONl9iLPujU3g6ijnaTwYO4N/4j6m/yZ1Eow/R6wcpD8UwR5+Shc/wFJ7GM9iG7diBndiF3XgWP8cv8NwMvZcJgiAIgiAIgiAIgiAIgnDvsjdDUfahlhGom5dRo67RpjVgPdZhbcbY/50ThC7y0o1nMwJ18zJq1DXatE7swHZskxwJgiAIgiAIgiAIgiAIgiAIgiAIwozhf5YA9LA=
+  </data>
+ </layer>
+ <layer id="4" name="вода" width="146" height="60">
+  <data encoding="base64" compression="zlib">
+   eJztmFlwFEUYx3tDEg4VNokniFKlVfISkhi1yqMqm1dRiSfkIAkk3idolQcq++LFfeuDoL6S2xNygWeVBQFe9F0fvZIXuUF/U+tUxk7P7vRkN5Okvn/Vr3p6er7u3plv/t2zSolEIpFIJBKJRCLR1NZbBUq9De/Au/AebICNsAk2w5aCqGcpmuwaIEcG4RAchq/hG/gWvoPv4QfJI1EG/U2OnIRTcBrOwFk4B+fhAlyUPBJlUGmhUkugDMqhAm6GSrgFboXbCqOepUgkEolEIpFIJBKJpos6ipTqhC7ohp6iqGckmooqLVZqCZRBOVQURz0j0VRUB3nTCV3QDT2SR6IQKi3Bj6AMyqGiJOoZiaaiOsibTuiCbuiRPBKJRCKRSCQSicatU1VKnYYzcBbOwXm4ABfhH1AJpWKQBzMgHwqgEGbCLJgNcxJR/ALRZND9CaUegAfhIXgYHoHlsAJqoQ7qoQFWQiM0QTOsgtXQAq2JCZ26aBKpLaFUO3RAJ3RBN/TAp/AZfA5fwJfwFRyAg9ALfdAPAzCYmNi5iyaPCqpZn2AmzILZMAcugUvhMpgL8yAORVAMJXA5XAFXwlVwdXXUv0YUlZp49s2wClZDC7TCo/AYPA5PwJPwFDwNz8Cz8Bw8Dy/AGljryaOXK5V6BV6tjO63iSZOdTGVrIUVsBwaoB7083o96nmLJpd2kBPbYRtshV2wE/Tzej3qeYui0Yd8v++FffARfAyfVEU9K9FU08kq839FIpGNahLm/4pEIhvtT5j/KxKJbJRfbf6vSBRMG+YptRE2wWbYAlthW4C6W04HNVab/ysSBVMvedAH/TAAg3AIDgeou+V00AFy5iD0Qh/0w0DIPDoyV6mjMATH4Dic8JRuu991K+mjCZqhUaXqYcoWaA1Ztnjqbn+Nacb7jTz4Hf6AP+EvGIaRAHW39LsfQc779ZlhHklTey5iFsaVug7c8npYpB0v0trDxDj1a+MquQB281zehw9gD+wOWS5I9TlmnCB199yNnv72pBlvfjz8eDbzMtUXpukzQ3zS1J6LmHsp7wO3XAY12nGN1h4mxqnfw3hLYYjnchxOwDEYClkuTfU5ZpxM9eEY7xHU00dDwPHujo9/PNs4733W20z33BCfNLXnIuYNyjfBLddDUjtOau1hYpz664y3DvbyXPbBeMt1qT7HjJOpflOeUothJ33sCjjea/Hw47l5ZBvnvc96m+meG+KTpvZcxHRQdoJbdkG3dtyttYeJcertjNcGP/Fcfobxlm2pPseMk6nuvk9H6ONowPH2x8OPN/JfHtnGee+z3ma654b4pKk9FzEmL/VDX9dsYpzrblCp/Ui2/ch2vXDfpxk82/xY8PFqoU6N+ou31HHOL84bxam779d40fcPOutTnuKsNUm/a7IdY/JSP/R1zSbGuc7dj2Tbj2zXC/d9upNne1cs+HjbYYcaXRe9pRe/nMpWHun7B51lqT2O4xFJv2uyHWPyUj/0dc0mxrnOZj9i40dh17UXeb4vWfjRj+r/uTGSxo+GY2N9K1t5pO8fdLw+EbTP8cakWwP8vsfCxDjHNvsRGz8K+x3UxrNtt/CjWGzUb7z5ofuRF69v5WJd07+lIOn1CVN7LmLSrQF+32NhYpzjXO2Pwn4H2c7ndnLmDvgFfjX4TaYyW3mUThPhPaZz6dYAv++xMDHOca72R2G/g2zns4ZcWAvX4C3zDX6TqZyIPLL1EX3NCBqjn5P9kf3+aLrsibLpUbI/st8fTeU9URC/kf3RxOyPotgTZfKjoN6RDe8xnZP9kf3+KIo9UTo/svEO3Uds4/32R+JH4kfiR+JH4kfiR+JH4kfiR+JH4kfiR+JH4kfiR+JH4kfiR+n86F8oAgz4
+  </data>
+ </layer>
+ <layer id="6" name="мосты" width="146" height="60">
+  <data encoding="base64" compression="zlib">
+   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
+  </data>
+ </layer>
+ <objectgroup id="9" name="Слой объектов 1">
+  <object id="1" name="Старт камеры" x="880.333" y="463">
+   <point/>
+  </object>
+  <object id="2" name="Монетка1" x="1255.5" y="570.5">
+   <point/>
+  </object>
+  <object id="3" name="Монетка2" x="1607" y="380">
+   <point/>
+  </object>
+  <object id="4" name="Монетка3" x="1472" y="380">
+   <point/>
+  </object>
+  <object id="5" name="Монетка4" x="1622" y="221.667">
+   <point/>
+  </object>
+  <object id="6" name="Монетка5" x="1168" y="247.333">
+   <point/>
+  </object>
+  <object id="7" name="Монетка6" x="1081.33" y="136">
+   <point/>
+  </object>
+  <object id="8" name="Монетка7" x="872.667" y="247.333">
+   <point/>
+  </object>
+  <object id="9" name="Монетка8" x="608" y="361.333">
+   <point/>
+  </object>
+  <object id="11" name="Монетка9" x="1536.33" y="136.667">
+   <point/>
+  </object>
+  <object id="12" name="Монетка10" x="1568.06" y="136.364">
+   <point/>
+  </object>
+ </objectgroup>
+</map>
