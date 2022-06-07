@@ -3,6 +3,7 @@ package ru.gb.mygdx.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 import java.awt.Dimension;
 
@@ -46,7 +47,7 @@ public class Animator
             time = 0.0f;
     }
 
-    public TextureRegion getTile () {    return animation.getKeyFrame (time);    }
+    public TextureRegion getCurrentTile () {    return animation.getKeyFrame (time);    }
 
     public void dispose () {    texture.dispose();    }
 

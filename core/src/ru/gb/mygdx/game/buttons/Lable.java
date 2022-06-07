@@ -1,4 +1,6 @@
-package ru.gb.mygdx.game;
+package ru.gb.mygdx.game.buttons;
+
+import static ru.gb.mygdx.game.MyGdxGame.onscreenTextColor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,7 +18,7 @@ public class Lable
         fontParameter.size = siz;
         fontParameter.characters = "0123456789ЙЦУКЕНГШЩЗХЪЖДЛОРПАВЫФЯЧСМИТЬБЮЁ йцукенгшщзхъждлорпавыфячсмитьбюё.,!:;?—-+«»()/*\\";
         bitmapFont = fontGenerator.generateFont (fontParameter);
-        bitmapFont.setColor (0.7f, 1.0f, 0.9f, 1.0f);
+        bitmapFont.setColor (onscreenTextColor);
         offsetX = lableOffsetX;
         offsetY = lableOffsetY;
     }

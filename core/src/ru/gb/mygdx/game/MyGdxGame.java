@@ -1,8 +1,8 @@
 package ru.gb.mygdx.game;
 
 import static java.lang.String.format;
-import static ru.gb.mygdx.game.HeroStates.HS_RUNNING;
-import static ru.gb.mygdx.game.HeroStates.HS_STANDING;
+import static ru.gb.mygdx.game.actors.ActorStates.*;
+import static ru.gb.mygdx.game.actors.MoveDirections.*;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -21,32 +21,37 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Graphics;
 
 import java.awt.Point;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import ru.gb.mygdx.game.actors.Hero;
+import ru.gb.mygdx.game.buttons.Coin60;
+import ru.gb.mygdx.game.buttons.Lable;
 
 public class MyGdxGame extends ApplicationAdapter
 {
     public static final int wndWidth = 800, wndHeight = 600;
+    public static final Color onscreenTextColor = new Color (0.7f, 1.0f, 0.9f, 1.0f);
 
     private SpriteBatch batch;
     private Texture  landScape, sky;  //TODO: выбрать пейзаж и небо.
     private float    coin60Scale, zoom;
-    private TiledMap map;
+    private TiledMap                   map;
     private OrthogonalTiledMapRenderer ortoMapRenderer;
     private OrthographicCamera         ortoCamera;
-    private Animator     animatorCoin60;
-    private List<Coin60> coins60;
-    private int          coins;
+    private Animator                   animatorCoin60;
+    private List<Coin60>               coins60;
+    private int                        coins;
     private TextureRegion coinScoreImage;
-    private Point         scoreImagePinPoint;
-    private Lable         lableCrore; //< Для каждого размера или начертания нужно создавать отдельный объект.
-    private ShapeRenderer shaper;
-    private Hero hero;
+    private Point                      scoreImagePinPoint;
+    private Lable                      lableCrore; //< Для каждого размера или начертания нужно создавать отдельный объект.
+    private ShapeRenderer              shaper;
+    private Hero                       hero;
 
 
     @Override public void create ()
@@ -67,15 +72,15 @@ public class MyGdxGame extends ApplicationAdapter
         MapObjects mapObjects = map.getLayers()
                                    .get ("Слой объектов 1")
                                    .getObjects();
-        FPoint cameraPosition = initCamera (mapObjects, zoom, viewportWidth, viewportHeight);
+        Vector2 cameraPosition = initCamera (mapObjects, zoom, viewportWidth, viewportHeight);
 
 /*  В редакторе карт координаты карты отсчитываются от ЛВУгла.
     RectangleMapObject.rectangle преобразует координаты карты так, чтобы они отсчитывались от ЛНУгла.
     На экране они отсчитываются от ЛНУгла.
     Камера.position, судя по всему, указывает на центр вьюпорта.
 */
-        FPoint mapToScreenOriginOffset = new FPoint (cameraPosition.x - viewportWidth * zoom / 2.0f,
-                                                     cameraPosition.y - viewportHeight * zoom / 2.0f);
+        Vector2 mapToScreenOriginOffset = new Vector2 (cameraPosition.x - viewportWidth * zoom / 2.0f,
+                                                       cameraPosition.y - viewportHeight * zoom / 2.0f);
         initCoins (mapToScreenOriginOffset, mapObjects);
         initScoreString (graphics);
 
@@ -85,12 +90,12 @@ public class MyGdxGame extends ApplicationAdapter
 
     private void initHero (float viewportWidth, float viewportHeight)
     {
-        hero = new Hero (new FPoint (viewportWidth/2.0f, viewportHeight/2.0f),
-                         new FPoint (4, 4), HS_STANDING);
+        hero = new Hero (new Vector2 (viewportWidth/2.0f, viewportHeight/2.0f),
+                         new Vector2 (4, 4), HS_STANDING, HD_RIGHT);
         hero.setScale (1.0f / zoom);
     }
 
-    private FPoint initCamera (MapObjects mapObjects, float zoom, float viewportWidth, float viewportHeight)
+    private Vector2 initCamera (MapObjects mapObjects, float zoom, float viewportWidth, float viewportHeight)
     {
         ortoCamera = new OrthographicCamera (viewportWidth, viewportHeight); //< Значения можно менять.
         ortoCamera.zoom = zoom;
@@ -98,7 +103,7 @@ public class MyGdxGame extends ApplicationAdapter
         //Никакой магии — объект 'точка' является RectangleMapObject с нулевыми размерами.
         RectangleMapObject rmo = (RectangleMapObject) mapObjects.get ("Старт камеры");
         Rectangle rect = rmo.getRectangle();
-        FPoint cameraPosition = new FPoint (rect.x, rect.y);
+        Vector2 cameraPosition = new Vector2 (rect.x, rect.y);
 
         ortoCamera.position.x = cameraPosition.x;
         ortoCamera.position.y = cameraPosition.y;
@@ -108,7 +113,7 @@ public class MyGdxGame extends ApplicationAdapter
 
     /** Расставляем монетки оконным координатам, указанным в карте.
      @param mapToScreenOriginOffset смещение оконных координат относительно координат RectangleMapObject. */
-    private void initCoins (FPoint mapToScreenOriginOffset, MapObjects mapObjects)
+    private void initCoins (Vector2 mapToScreenOriginOffset, MapObjects mapObjects)
     {
         coin60Scale = 1.0f / zoom;
         animatorCoin60 = new Animator ("coins.png", 6, 1, 10.0f, Animation.PlayMode.LOOP, 194, 24, 62*6, 60, 8);
@@ -117,17 +122,17 @@ public class MyGdxGame extends ApplicationAdapter
 
         //Смещение монетки нужно для того, чтобы точка на карте соответствовала не ЛНуглу монетки,
         // а середине основания.
-        FPoint coinDrawShift = new FPoint (-animatorCoin60.tileWidth/2.0f * coin60Scale,
-                                           0.0f);
+        Vector2 coinDrawShift = new Vector2 (-animatorCoin60.tileWidth/2.0f * coin60Scale,
+                                             0.0f);
         for (MapObject mo : mapObjects)
         {
             String name = mo.getName();
             if (name != null && name.startsWith ("Монетка"))
             {
                 Rectangle rm = ((RectangleMapObject) mo).getRectangle();
-                FPoint pinPoint = new FPoint (rm.x - mapToScreenOriginOffset.x + coinDrawShift.x,
-                                              rm.y - mapToScreenOriginOffset.y + coinDrawShift.y);
-                coins60.add (new Coin60 (animatorCoin60, pinPoint, coin60Scale));
+                Vector2 pinPoint = new Vector2 (rm.x - mapToScreenOriginOffset.x + coinDrawShift.x,
+                                                rm.y - mapToScreenOriginOffset.y + coinDrawShift.y);
+                coins60.add (new Coin60 (animatorCoin60, pinPoint, coin60Scale, mo.isVisible()));
             }
         }
         coins = coins60.size();
@@ -136,14 +141,14 @@ public class MyGdxGame extends ApplicationAdapter
     /** Рисуем строку счёта собранных монеток и изображение монетки рядом с ней. */
     private void initScoreString (Graphics graphics)
     {
-        coinScoreImage = animatorCoin60.getTile();
+        coinScoreImage = animatorCoin60.getCurrentTile();
         scoreImagePinPoint = new Point (0, (int)(graphics.getHeight() - animatorCoin60.tileHeight * coin60Scale));
 
         lableCrore = new Lable ((int)(64 / zoom)
                 ,scoreImagePinPoint.x + animatorCoin60.tileWidth
                 ,graphics.getHeight());
     }
-
+//--------------------------------------------------------------------------------------------
     @Override public void render ()
     {
         Graphics graphics = Gdx.graphics;
@@ -156,7 +161,7 @@ public class MyGdxGame extends ApplicationAdapter
         float deltaTime = graphics.getDeltaTime();
         animatorCoin60.updateTime (deltaTime);
 
-        FPoint delta = readDirectionsKeys (input);
+        Vector2 delta = readDirectionsKeys (input);
         if (delta.x != 0.0f || delta.y != 0.0f)
         {
             cameraMoving (delta);
@@ -184,7 +189,7 @@ public class MyGdxGame extends ApplicationAdapter
         batch.end();
 
         shaper.begin (ShapeRenderer.ShapeType.Line);
-        hero.drawShape (shaper, Color.WHITE);
+        hero.drawShape (shaper, onscreenTextColor/*Color.WHITE*/);
 
         for (int i=0, n=coins60.size();  i < n;  i++) {
             Coin60 coin = coins60.get(i);
@@ -193,6 +198,7 @@ public class MyGdxGame extends ApplicationAdapter
                 coins60.remove(i);  //< В обычном цикле удалять можно без итератора.
                 n--;
             }
+            else coin.drawShape (shaper, onscreenTextColor);
         }
 /*        Iterator<Coin60> it = coins60.iterator();
         while (it.hasNext())
@@ -206,7 +212,7 @@ public class MyGdxGame extends ApplicationAdapter
     }
 
 /** @param delta смещение камеры по осям.  */
-    private void cameraMoving (FPoint delta)
+    private void cameraMoving (Vector2 delta)
     {
         ortoCamera.position.x += delta.x;
         ortoCamera.position.y += delta.y;
@@ -215,32 +221,58 @@ public class MyGdxGame extends ApplicationAdapter
         }
     }
 
-    private FPoint readDirectionsKeys (Input input)
+    private Vector2 readDirectionsKeys (Input input)
     {
-        FPoint delta = new FPoint();
-        if (input.isKeyPressed (Input.Keys.D) || input.isKeyPressed (Input.Keys.RIGHT))  delta.x =  hero.step().x;
+        Vector2 delta = new Vector2();
+        if (input.isKeyPressed (Input.Keys.D) || input.isKeyPressed (Input.Keys.RIGHT))
+        {
+            if (hero.getDirection().equals(HD_LEFT))
+                hero.setDirection (HD_RIGHT);
+            else {
+                hero.setState (HS_RUNNING);
+                delta.x = hero.step().x;
+            }
+        }
         else
-        if (input.isKeyPressed (Input.Keys.A) || input.isKeyPressed (Input.Keys.LEFT))   delta.x = -hero.step().x;
+        if (input.isKeyPressed (Input.Keys.A) || input.isKeyPressed (Input.Keys.LEFT))
+        {
+            if (hero.getDirection().equals(HD_RIGHT))
+                hero.setDirection (HD_LEFT);
+            else {
+                hero.setState (HS_RUNNING);
+                delta.x = -hero.step().x;
+            }
+        }
 
-        if (input.isKeyPressed (Input.Keys.W) || input.isKeyPressed (Input.Keys.UP))     delta.y =  hero.step().y;
+        if (input.isKeyPressed (Input.Keys.W) || input.isKeyPressed (Input.Keys.UP))
+        {
+            //if ()
+            delta.y = hero.step().y;
+        }
         else
-        if (input.isKeyPressed (Input.Keys.S) || input.isKeyPressed (Input.Keys.DOWN))   delta.y = -hero.step().y;
+        if (input.isKeyPressed (Input.Keys.S) || input.isKeyPressed (Input.Keys.DOWN))
+        {
+            delta.y = -hero.step().y;
+        }
         return delta;
     }
 
     private void drawCoins () {
-        //scoreCoin.draw (batch, zoom);
         batch.draw (coinScoreImage, scoreImagePinPoint.x, scoreImagePinPoint.y);
         for (Coin60 coin : coins60)
-            coin.draw (batch, zoom);
+            if (coin.visible)
+                coin.draw (batch, zoom);
     }
 
+    private boolean canClimb () {
+        return false;   //TODO: заглушка.
+    }
+//--------------------------------------------------------------------------------------------
     @Override public void dispose ()
     {
         batch.dispose();
         hero.dispose();
         animatorCoin60.dispose();
-        //animatorCoin60score.dispose();
         lableCrore.dispose();
         shaper.dispose();
     }

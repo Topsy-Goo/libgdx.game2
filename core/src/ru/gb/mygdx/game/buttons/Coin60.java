@@ -1,27 +1,33 @@
-package ru.gb.mygdx.game;
+package ru.gb.mygdx.game.buttons;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+
+import ru.gb.mygdx.game.Animator;
 
 public class Coin60
 {
     private final Animator  animator;
-    private final FPoint    pinPoint;
+    private final Vector2   pinPoint;
     private final Rectangle rectShape;
     private       float     scale;
+    public  final boolean   visible;
 
-    public Coin60 (Animator coinAnimator, FPoint pPoint, float cScale) {
+    public Coin60 (Animator coinAnimator, Vector2 pPoint, float cScale, boolean visibl)
+    {
         animator = coinAnimator;
         pinPoint = pPoint;
-        scale = cScale;
+        scale    = cScale;
         rectShape = new Rectangle (pinPoint.x, pinPoint.y, animator.tileWidth, animator.tileHeight);
+        visible  = visibl;
     }
 
     public void draw (SpriteBatch batch, float zoom)
     {
-        batch.draw (animator.getTile(),
+        batch.draw (animator.getCurrentTile(),
                     pinPoint.x / zoom, pinPoint.y / zoom,
                     0, 0, animator.tileWidth, animator.tileHeight,
                     scale, scale, 0);
