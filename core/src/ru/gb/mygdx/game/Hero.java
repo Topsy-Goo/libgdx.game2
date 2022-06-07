@@ -1,7 +1,10 @@
 package ru.gb.mygdx.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 
 import static ru.gb.mygdx.game.HeroStates.HS_RUNNING;
 import static ru.gb.mygdx.game.HeroStates.HS_STANDING;
@@ -12,12 +15,13 @@ public class Hero
 {
     private final Animator animatorRunning, animatorStanding;
     private final FPoint pinPoint, step;
-    //private dimentionHero;
-    private HeroStates state;
-    private float scale;
+    private       HeroStates state;
+    private       float scale;
+    private       Rectangle rectShape;
 
 
-    public Hero (FPoint pointToPinHeroUp, FPoint heroStep) {
+    public Hero (FPoint pointToPinHeroUp, FPoint heroStep, HeroStates initialState)
+    {
         step = heroStep;
         animatorRunning = new Animator ("mario02.png", 4, 2, 15, Animation.PlayMode.LOOP,
                                         137, 0, 256, 196, 8);
@@ -28,6 +32,8 @@ public class Hero
         pinPoint.x -= dimentionHero.width / 2.0f;
         pinPoint.y -= dimentionHero.height / 2.0f;
         setState (HS_STANDING);
+        rectShape = new Rectangle (pinPoint.x, pinPoint.y, dimentionHero.width, dimentionHero.height);
+        state = initialState;
     }
 
     public FPoint pinPoint () {   return pinPoint;   }
@@ -58,10 +64,17 @@ public class Hero
                     scale, scale, 0);
     }
 
+    public void drawShape (ShapeRenderer shaper, Color color) {
+        shaper.setColor (color);
+        shaper.rect (rectShape.x, rectShape.y, rectShape.width, rectShape.height);
+    }
+
     public void setScale (float factor) {
         if (factor > 0.0f)
             scale = factor;
     }
+
+    public Rectangle shape () { return rectShape; }
 
     public void dispose () {
         animatorRunning.dispose();
