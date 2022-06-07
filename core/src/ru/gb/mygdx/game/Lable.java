@@ -13,7 +13,7 @@ public class Lable
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("Gabriola.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.size = siz;
-        fontParameter.characters = "ЙЦУКЕНГШЩЗХЪЖДЛОРПАВЫФЯЧСМИТЬБЮЁ йцукенгшщзхъждлорпавыфячсмитьбюё.,!:?—-«»()/*\\";
+        fontParameter.characters = "0123456789ЙЦУКЕНГШЩЗХЪЖДЛОРПАВЫФЯЧСМИТЬБЮЁ йцукенгшщзхъждлорпавыфячсмитьбюё.,!:;?—-+«»()/*\\";
         bitmapFont = fontGenerator.generateFont(fontParameter);
         bitmapFont.setColor (0.7f, 1.0f, 0.9f, 1);
     }

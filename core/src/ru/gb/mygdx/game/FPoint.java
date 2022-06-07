@@ -7,5 +7,9 @@ public class FPoint {
     public FPoint (){}
     public FPoint (float fx, float fy) {  x = fx;  y = fy;  }
 
-    public void scale (float factor) {    x *= factor;  y *= factor;    }
+    public FPoint scale (float factor) {
+        x *= factor;
+        y *= factor;
+        return this;
+    }
 }
