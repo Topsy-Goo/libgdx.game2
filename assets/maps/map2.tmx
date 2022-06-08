@@ -66,10 +66,10 @@
   <object id="9" name="Монетка8" x="608" y="361.333">
    <point/>
   </object>
-  <object id="11" name="Монетка9" x="1536.33" y="136.667">
+  <object id="11" name="Монетка9" x="1536.33" y="136.667" visible="0">
    <point/>
   </object>
-  <object id="12" name="Монетка10" x="1568.06" y="136.364">
+  <object id="12" name="Монетка10" x="1568.06" y="136.364" visible="0">
    <point/>
   </object>
  </objectgroup>
