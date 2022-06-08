@@ -26,10 +26,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Graphics;
 
 import java.awt.Point;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import ru.gb.mygdx.game.actors.Hero;
+import ru.gb.mygdx.game.actors.MoveDirections;
 import ru.gb.mygdx.game.buttons.Coin60;
 import ru.gb.mygdx.game.buttons.Lable;
 
@@ -37,6 +39,8 @@ public class MyGdxGame extends ApplicationAdapter
 {
     public static final int wndWidth = 800, wndHeight = 600;
     public static final Color onscreenTextColor = new Color (0.7f, 1.0f, 0.9f, 1.0f);
+    public static final boolean DEBUG = true;
+    public static final String heroTextureFileName = "mario02.png";
 
     private SpriteBatch batch;
     private Texture  landScape, sky;  //TODO: выбрать пейзаж и небо.
@@ -90,8 +94,9 @@ public class MyGdxGame extends ApplicationAdapter
 
     private void initHero (float viewportWidth, float viewportHeight)
     {
-        hero = new Hero (new Vector2 (viewportWidth/2.0f, viewportHeight/2.0f),
-                         new Vector2 (4, 4), HS_STANDING, HD_RIGHT);
+        hero = new Hero (heroTextureFileName,
+                         new Vector2 (viewportWidth/2.0f, viewportHeight/2.0f),
+                         new Vector2 (4, 4), AS_STANDING, MD_RIGHT);
         hero.setScale (1.0f / zoom);
     }
 
@@ -167,11 +172,11 @@ public class MyGdxGame extends ApplicationAdapter
             cameraMoving (delta);
             hero.updateTime (deltaTime);
             ortoCamera.update();
-            hero.setState (HS_RUNNING);
+            //hero.setState (AS_RUNNING);
         }
         else {
             hero.updateTime (-1.0f);
-            hero.setState (HS_STANDING);
+            hero.setState (AS_STANDING);
         }
         ortoMapRenderer.setView (ortoCamera);
 
@@ -191,7 +196,7 @@ public class MyGdxGame extends ApplicationAdapter
         shaper.begin (ShapeRenderer.ShapeType.Line);
         hero.drawShape (shaper, onscreenTextColor/*Color.WHITE*/);
 
-        for (int i=0, n=coins60.size();  i < n;  i++) {
+/*        for (int i=0, n=coins60.size();  i < n;  i++) {
             Coin60 coin = coins60.get(i);
 
             if (coin.isOverlapped (hero.shape())) {
@@ -199,15 +204,15 @@ public class MyGdxGame extends ApplicationAdapter
                 n--;
             }
             else coin.drawShape (shaper, onscreenTextColor);
-        }
-/*        Iterator<Coin60> it = coins60.iterator();
+        }*/
+        Iterator<Coin60> it = coins60.iterator();
         while (it.hasNext())
         {
             Coin60 coin = it.next();
             if (coin.isOverlapped (hero.shape()))
                 it.remove();
             else coin.drawShape (shaper, Color.WHITE);
-        }*/
+        }
         shaper.end();
     }
 
@@ -226,35 +231,95 @@ public class MyGdxGame extends ApplicationAdapter
         Vector2 delta = new Vector2();
         if (input.isKeyPressed (Input.Keys.D) || input.isKeyPressed (Input.Keys.RIGHT))
         {
-            if (hero.getDirection().equals(HD_LEFT))
-                hero.setDirection (HD_RIGHT);
+            //Если смотрим в противоположную сторону, то разворачиваемся, а если смотрим в правильную сторону, то бежим.
+            if (hero.getDirection().equals(MD_LEFT)) {
+                hero.setDirection (MD_RIGHT);
+                hero.setState (AS_STANDING);
+            }
             else {
-                hero.setState (HS_RUNNING);
+                hero.setState (AS_RUNNING);
                 delta.x = hero.step().x;
             }
         }
         else
         if (input.isKeyPressed (Input.Keys.A) || input.isKeyPressed (Input.Keys.LEFT))
         {
-            if (hero.getDirection().equals(HD_RIGHT))
-                hero.setDirection (HD_LEFT);
+            //Если смотрим в противоположную сторону, то разворачиваемся, а если смотрим в правильную сторону, то бежим.
+            if (hero.getDirection().equals(MD_RIGHT)) {
+                hero.setDirection (MD_LEFT);
+                hero.setState (AS_STANDING);
+            }
             else {
-                hero.setState (HS_RUNNING);
+                hero.setState (AS_RUNNING);
                 delta.x = -hero.step().x;
             }
         }
 
+        if (input.isKeyJustPressed (Input.Keys.W) || input.isKeyJustPressed (Input.Keys.UP))
+        {
+            //Если мы на лестнице или перед ней, то — поднимаемся на 1 шаг вверх. (Снова помним о направлении,
+            // которое стоящий персонаж должен иметь после завершения подъёма.)
+            // Эту проверку нужно делать в первую очередь, а то до canClimb() очередь не дойдёт.
+            if (canClimb (MD_UP)) {
+                hero.setState (AS_CLIMBING);
+                delta.y = hero.step().y;
+            }
+            else
+            //Если мы стоим, то — прыжок вверх. (Важно сохранить направление, чтобы не приземлиться, повёрнутым
+            // в противоположную сторону.)
+            if (hero.getState().equals (AS_STANDING)) {
+                hero.setState (AS_JUMPING_UP);
+                delta.y = hero.jump().y;
+            }
+            else
+            //Если мы бежим, то — прыжок вперёд. (Также важно сохранить направление.)
+            if (hero.getState().equals (AS_RUNNING)) {
+                hero.setState (AS_JUMPING_FORTH);
+                delta.x = hero.jump().x;
+                delta.y = hero.jump().y;
+            }
+            //else if (DEBUG) throw new RuntimeException ("Неизвестное состояние персонажа при isKeyJustPressed (UP).");
+        }
+        else
+        if (input.isKeyJustPressed (Input.Keys.S) || input.isKeyJustPressed (Input.Keys.DOWN))
+        {
+            //Если мы на лестнице или на её верхней ступеньке, то — опускаемся на 1 шаг вниз. (Помним о направлении,
+            // которое стоящий персонаж должен иметь после завершения спуска.)
+            if (canClimb (MD_DOWN)) {
+                hero.setState (AS_CLIMBING);
+                delta.y = -hero.step().y;
+            }
+        }
+        else
+        //(Сейчас мы находимся в одном из след.состояний: AS_JUMPING_UP, AS_JUMPING_FORTH, AS_CLIMBING.)
         if (input.isKeyPressed (Input.Keys.W) || input.isKeyPressed (Input.Keys.UP))
         {
-            //if ()
-            delta.y = hero.step().y;
+            if (canClimb (MD_UP)/*hero.getState().equals(AS_CLIMBING)*/)
+                delta.y = hero.step().y;
         }
         else
         if (input.isKeyPressed (Input.Keys.S) || input.isKeyPressed (Input.Keys.DOWN))
         {
-            delta.y = -hero.step().y;
+            //Если мы на лестнице, то — опускаемся на 1 шаг вниз. (Помним о направлении,
+            // которое стоящий персонаж должен иметь после завершения спуска.)
+            if (canClimb (MD_DOWN)/*hero.getState().equals(AS_CLIMBING)*/)
+                delta.y = -hero.step().y;
         }
         return delta;
+    }
+
+    /** Выясняем, можем ли мы карабкаться вверх, например, по лестнице. Персонаж <b>может</b> подниматься
+     по лестнице, если он находится на лестнице или стоит у её подножья, и не находится не верхней ступеньке.
+     Персонаж <b>не может</b> подниматься по лестнице во всех отсальных случаях. */
+    private boolean canClimb (MoveDirections direction)  //TODO: заглушка.
+    {
+        if (direction != null)
+            if (direction.equals (MD_UP))
+                return Gdx.input.isKeyPressed (Input.Keys.CONTROL_RIGHT);
+            else
+            if (direction.equals (MD_DOWN))
+                return Gdx.input.isKeyPressed (Input.Keys.CONTROL_RIGHT);
+        return false;
     }
 
     private void drawCoins () {
@@ -262,10 +327,6 @@ public class MyGdxGame extends ApplicationAdapter
         for (Coin60 coin : coins60)
             if (coin.visible)
                 coin.draw (batch, zoom);
-    }
-
-    private boolean canClimb () {
-        return false;   //TODO: заглушка.
     }
 //--------------------------------------------------------------------------------------------
     @Override public void dispose ()

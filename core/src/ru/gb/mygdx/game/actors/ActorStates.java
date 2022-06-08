@@ -1,8 +1,9 @@
 package ru.gb.mygdx.game.actors;
 
 public enum ActorStates {
-     HS_STANDING
-    ,HS_RUNNING
-    ,HS_JUMPING
-    ,HS_CLIMBING
+     AS_STANDING
+    ,AS_RUNNING
+    ,AS_CLIMBING
+    ,AS_JUMPING_UP
+    ,AS_JUMPING_FORTH
 }

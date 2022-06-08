@@ -1,8 +1,8 @@
 package ru.gb.mygdx.game.actors;
 
 public enum MoveDirections {
-     HD_RIGHT
-    ,HD_LEFT
-    ,HD_UP
-    ,HD_DOWN
+     MD_RIGHT
+    ,MD_LEFT
+    ,MD_UP
+    ,MD_DOWN
 }
