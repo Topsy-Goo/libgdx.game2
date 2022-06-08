@@ -37,25 +37,27 @@ import ru.gb.mygdx.game.buttons.Lable;
 
 public class MyGdxGame extends ApplicationAdapter
 {
-    public static final int wndWidth = 800, wndHeight = 600;
+
+    public static final int wndWidth = 800, wndHeight = 600, fps = 15;
     public static final Color onscreenTextColor = new Color (0.7f, 1.0f, 0.9f, 1.0f);
     public static final boolean DEBUG = true;
     public static final String heroTextureFileName = "mario02.png";
+    public static final Vector2 heroStep = new Vector2 (4f*60/fps, 4f*60/fps);
 
     private SpriteBatch batch;
     private Texture  landScape, sky;  //TODO: выбрать пейзаж и небо.
     private float    coin60Scale, zoom;
-    private TiledMap                   map;
+    private TiledMap map;
     private OrthogonalTiledMapRenderer ortoMapRenderer;
     private OrthographicCamera         ortoCamera;
     private Animator                   animatorCoin60;
-    private List<Coin60>               coins60;
-    private int                        coins;
+    private List<Coin60>  coins60;
+    private int           coins;
     private TextureRegion coinScoreImage;
-    private Point                      scoreImagePinPoint;
-    private Lable                      lableCrore; //< Для каждого размера или начертания нужно создавать отдельный объект.
-    private ShapeRenderer              shaper;
-    private Hero                       hero;
+    private Point         scoreImagePinPoint;
+    private Lable         lableCrore; //< Для каждого размера или начертания нужно создавать отдельный объект.
+    private ShapeRenderer shaper;
+    private Hero          hero;
 
 
     @Override public void create ()
@@ -64,14 +66,13 @@ public class MyGdxGame extends ApplicationAdapter
         float viewportWidth = graphics.getWidth();
         float viewportHeight = graphics.getHeight();
 
-        zoom = 1.0f;
+        zoom = 1f;
         batch = new SpriteBatch();
         shaper = new ShapeRenderer();
+        shaper.scale(1f / zoom, 1f / zoom, 1f);
 
         map = new TmxMapLoader().load ("maps/map2.tmx");
         ortoMapRenderer = new OrthogonalTiledMapRenderer (map);
-
-        initHero (viewportWidth, viewportHeight);
 
         MapObjects mapObjects = map.getLayers()
                                    .get ("Слой объектов 1")
@@ -87,6 +88,7 @@ public class MyGdxGame extends ApplicationAdapter
                                                        cameraPosition.y - viewportHeight * zoom / 2.0f);
         initCoins (mapToScreenOriginOffset, mapObjects);
         initScoreString (graphics);
+        initHero (viewportWidth / 2.0f, viewportHeight / 2.0f);
 
         //landScape = new Texture ("");
         //sky = new Texture ("");
@@ -95,9 +97,10 @@ public class MyGdxGame extends ApplicationAdapter
     private void initHero (float viewportWidth, float viewportHeight)
     {
         hero = new Hero (heroTextureFileName,
-                         new Vector2 (viewportWidth/2.0f, viewportHeight/2.0f),
-                         new Vector2 (4, 4), AS_STANDING, MD_RIGHT);
-        hero.setScale (1.0f / zoom);
+                         new Vector2 (viewportWidth, viewportHeight),
+                         new Vector2 (heroStep),
+                         AS_STANDING, MD_RIGHT,
+                         zoom);
     }
 
     private Vector2 initCamera (MapObjects mapObjects, float zoom, float viewportWidth, float viewportHeight)
@@ -150,7 +153,7 @@ public class MyGdxGame extends ApplicationAdapter
         scoreImagePinPoint = new Point (0, (int)(graphics.getHeight() - animatorCoin60.tileHeight * coin60Scale));
 
         lableCrore = new Lable ((int)(64 / zoom)
-                ,scoreImagePinPoint.x + animatorCoin60.tileWidth
+                ,(int)((scoreImagePinPoint.x + animatorCoin60.tileWidth)/zoom)
                 ,graphics.getHeight());
     }
 //--------------------------------------------------------------------------------------------
@@ -201,7 +204,7 @@ public class MyGdxGame extends ApplicationAdapter
 
             if (coin.isOverlapped (hero.shape())) {
                 coins60.remove(i);  //< В обычном цикле удалять можно без итератора.
-                n--;
+                n--; i--;
             }
             else coin.drawShape (shaper, onscreenTextColor);
         }*/
@@ -323,7 +326,9 @@ public class MyGdxGame extends ApplicationAdapter
     }
 
     private void drawCoins () {
-        batch.draw (coinScoreImage, scoreImagePinPoint.x, scoreImagePinPoint.y);
+        batch.draw (coinScoreImage, scoreImagePinPoint.x, scoreImagePinPoint.y, 0,0,
+                    coinScoreImage.getRegionWidth(), coinScoreImage.getRegionHeight(),
+                    coin60Scale, coin60Scale, 0.0f);
         for (Coin60 coin : coins60)
             if (coin.visible)
                 coin.draw (batch, zoom);

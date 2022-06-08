@@ -1,5 +1,6 @@
 package ru.gb.mygdx.game;
 
+import static ru.gb.mygdx.game.MyGdxGame.fps;
 import static ru.gb.mygdx.game.MyGdxGame.wndHeight;
 import static ru.gb.mygdx.game.MyGdxGame.wndWidth;
 
@@ -14,7 +15,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setWindowedMode (wndWidth, wndHeight);
         config.setResizable (false);
-		config.setForegroundFPS (60);
+		config.setForegroundFPS (fps);
 		config.setTitle ("My GDX Game");
 		new Lwjgl3Application (new MyGdxGame(), config);
 	}

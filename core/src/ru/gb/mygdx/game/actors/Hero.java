@@ -26,9 +26,10 @@ public class Hero
 
 
     public Hero (String fileName, Vector2 pointToPinHeroUp, Vector2 heroStep,
-                 ActorStates initialState, MoveDirections dir)
+                 ActorStates initialState, MoveDirections dir, float zoom)
     {
-        step = heroStep;
+        scale = 1.0f / zoom;
+        step = heroStep; //< шаг должен зависеть от fps и не должен зависеть от zoom.
         jump = new Vector2 (heroStep.x, heroStep.y);
         jump.scl (8.0f);
 
@@ -40,19 +41,19 @@ public class Hero
 
         Dimension dimentionHero = animatorRunning.getTileDimention();
         pinPoint = pointToPinHeroUp;
-        pinPoint.x -= dimentionHero.width / 2.0f;
-        pinPoint.y -= dimentionHero.height / 2.0f;
+        pinPoint.x -= dimentionHero.width / 2.0f / zoom;
+        pinPoint.y -= dimentionHero.height / 2.0f / zoom;
         setState (AS_STANDING);
-        rectShape = new Rectangle (pinPoint.x, pinPoint.y, dimentionHero.width, dimentionHero.height);
+        rectShape = new Rectangle (pinPoint.x * zoom, pinPoint.y * zoom, dimentionHero.width, dimentionHero.height);
         state     = initialState;
         direction = dir;
     }
 
     public Vector2 pinPoint () {   return pinPoint;   }
 
-    public Vector2 step () {   return step.scl (scale);   }
+    public Vector2 step () {   return step;   }
 
-    public Vector2 jump () {   return jump.scl (scale);   }
+    public Vector2 jump () {   return jump;   }
 
     public ActorStates getState () { return state; }
 
