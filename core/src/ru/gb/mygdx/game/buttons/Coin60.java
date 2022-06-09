@@ -21,8 +21,9 @@ public class Coin60
         animator = coinAnimator;
         pinPoint = pPoint;
         scale    = cScale;
-        rectShape = new Rectangle (pinPoint.x, pinPoint.y, animator.tileWidth, animator.tileHeight);
         visible  = visibl;
+        rectShape = new Rectangle (pinPoint.x, pinPoint.y,
+                                   animator.tileWidth * scale, animator.tileHeight * scale);
     }
 
     public void draw (SpriteBatch batch, float zoom)
@@ -35,12 +36,14 @@ public class Coin60
 
     public void drawShape (ShapeRenderer shaper, Color color) {
         shaper.setColor (color);
-        shaper.rect (rectShape.x, rectShape.y, rectShape.width, rectShape.height);
+        shaper.rect (rectShape.x, rectShape.y,
+                     rectShape.width, rectShape.height);
     }
 
     public void setScale (float factor) {
-        if (factor > 0.0f)
+        if (factor > 0.0f) {
             scale = factor;
+        }
     }
 
     public void shift (float deltaX, float deltaY) {

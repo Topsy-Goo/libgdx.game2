@@ -54,7 +54,7 @@ public class MyGdxGame extends ApplicationAdapter
     private List<Coin60>  coins60;
     private int           coins;
     private TextureRegion coinScoreImage;
-    private Point         scoreImagePinPoint;
+    private Vector2       scoreImagePinPoint;
     private Lable         lableCrore; //< Для каждого размера или начертания нужно создавать отдельный объект.
     private ShapeRenderer shaper;
     private Hero          hero;
@@ -123,7 +123,7 @@ public class MyGdxGame extends ApplicationAdapter
      @param mapToScreenOriginOffset смещение оконных координат относительно координат RectangleMapObject. */
     private void initCoins (Vector2 mapToScreenOriginOffset, MapObjects mapObjects)
     {
-        coin60Scale = 1.0f / zoom;
+        coin60Scale = 0.5f / zoom;
         animatorCoin60 = new Animator ("coins.png", 6, 1, 10.0f, Animation.PlayMode.LOOP, 194, 24, 62*6, 60, 8);
 
         coins60 = new LinkedList<>();
@@ -150,10 +150,16 @@ public class MyGdxGame extends ApplicationAdapter
     private void initScoreString (Graphics graphics)
     {
         coinScoreImage = animatorCoin60.getCurrentTile();
-        scoreImagePinPoint = new Point (0, (int)(graphics.getHeight() - animatorCoin60.tileHeight * coin60Scale));
+
+    //Нам нравится большой шрифт, поэтому не уменьшаем его вслед размеру монетки, а подгоняем к нему размер
+    // изображения монетки — рисуем монетку в центре отведённого для неё места (место рассчитано на
+    // полноразмерную монетку).
+
+        float shift = animatorCoin60.tileWidth * coin60Scale / 2f;
+        scoreImagePinPoint = new Vector2 (shift, graphics.getHeight() - animatorCoin60.tileHeight + shift);
 
         lableCrore = new Lable ((int)(64 / zoom)
-                ,(int)((scoreImagePinPoint.x + animatorCoin60.tileWidth)/zoom)
+                ,(int)((scoreImagePinPoint.x + animatorCoin60.tileWidth * coin60Scale)/zoom)
                 ,graphics.getHeight());
     }
 //--------------------------------------------------------------------------------------------

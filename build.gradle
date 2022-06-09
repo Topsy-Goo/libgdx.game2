@@ -1,6 +1,9 @@
 buildscript {
     
 
+    ext {
+        appName = 'My GDX Game'
+    }
     repositories {
         mavenLocal()
         mavenCentral()
