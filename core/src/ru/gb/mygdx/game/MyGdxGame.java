@@ -16,16 +16,24 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.MapProperties;import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.MathUtils;import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Graphics;
 
-import java.awt.Point;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,14 +43,26 @@ import ru.gb.mygdx.game.actors.MoveDirections;
 import ru.gb.mygdx.game.buttons.Coin60;
 import ru.gb.mygdx.game.buttons.Lable;
 
+
 public class MyGdxGame extends ApplicationAdapter
 {
 
-    public static final int wndWidth = 800, wndHeight = 600, fps = 15;
+    public static final int wndWidth = 800, wndHeight = 600, FPS_MAX = 60, fps = Math.min (30, FPS_MAX);
+    public static final float   G = 9.8f, COIN_FPS = 10.0f;
     public static final Color onscreenTextColor = new Color (0.7f, 1.0f, 0.9f, 1.0f);
     public static final boolean DEBUG = true;
-    public static final String heroTextureFileName = "mario02.png";
-    public static final Vector2 heroStep = new Vector2 (4f*60/fps, 4f*60/fps);
+    public static final String  heroTextureFileName = "mario02.png";
+    public static final Vector2 heroStep = new Vector2 (4f *FPS_MAX /fps, 4f *FPS_MAX /fps); //< скорость персонажа не должна зависеть от fps.
+    public static final boolean
+            DO_SLEEP = true,
+            WAKE = true,
+            MARK_BODIES = true,
+            DRAW_BODIES          = true,
+            DRAW_JOINTS          = true,
+            DRAW_AABBS           = true,
+            DRAW_INACTIVE_BODIES = true,
+            DRAW_VELOCITIES      = true,
+            DRAW_CONTACTS        = true;
 
     private SpriteBatch batch;
     private Texture  landScape, sky;  //TODO: выбрать пейзаж и небо.
@@ -59,6 +79,12 @@ public class MyGdxGame extends ApplicationAdapter
     private ShapeRenderer shaper;
     private Hero          hero;
 
+    private World world1;
+    private Body  heroBody;
+    private Box2DDebugRenderer debugRenderer;
+    private boolean draw_box2d;
+    Vector2 inworldPosition;
+
 
     @Override public void create ()
     {
@@ -66,7 +92,7 @@ public class MyGdxGame extends ApplicationAdapter
         float viewportWidth = graphics.getWidth();
         float viewportHeight = graphics.getHeight();
 
-        zoom = 1f;
+        zoom = 0.50f;
         batch = new SpriteBatch();
         shaper = new ShapeRenderer();
         shaper.scale(1f / zoom, 1f / zoom, 1f);
@@ -75,23 +101,132 @@ public class MyGdxGame extends ApplicationAdapter
         ortoMapRenderer = new OrthogonalTiledMapRenderer (map);
 
         MapObjects mapObjects = map.getLayers()
-                                   .get ("Слой объектов 1")
+                                   .get ("Монетки")
                                    .getObjects();
         Vector2 cameraPosition = initCamera (mapObjects, zoom, viewportWidth, viewportHeight);
+        inworldPosition = new Vector2(cameraPosition.x, cameraPosition.y);
 
+        Vector2 mapToScreenOriginOffset = new Vector2 (cameraPosition.x - viewportWidth * zoom / 2.0f,
+                                                       cameraPosition.y - viewportHeight * zoom / 2.0f);
 /*  В редакторе карт координаты карты отсчитываются от ЛВУгла.
     RectangleMapObject.rectangle преобразует координаты карты так, чтобы они отсчитывались от ЛНУгла.
     На экране они отсчитываются от ЛНУгла.
     Камера.position, судя по всему, указывает на центр вьюпорта.
 */
-        Vector2 mapToScreenOriginOffset = new Vector2 (cameraPosition.x - viewportWidth * zoom / 2.0f,
-                                                       cameraPosition.y - viewportHeight * zoom / 2.0f);
         initCoins (mapToScreenOriginOffset, mapObjects);
         initScoreString (graphics);
         initHero (viewportWidth / 2.0f, viewportHeight / 2.0f);
 
+        createWorld (MARK_BODIES, DRAW_AABBS, DRAW_VELOCITIES);
+        createHeroBody (cameraPosition);
+
         //landScape = new Texture ("");
         //sky = new Texture ("");
+    }
+
+    private void createHeroBody (Vector2 cameraPosition)
+    {
+        Rectangle rect = hero.shape();
+        BodyDef bodyDef = new BodyDef();
+        FixtureDef fixtureDef = new FixtureDef();
+    //PolygonShape polygonShape = new PolygonShape();
+    //polygonShape.setAsBox (rect.getWidth()/2f, rect.getHeight()/2f);
+    CircleShape shape = new CircleShape();
+    shape.setRadius (rect.getHeight()/2f);
+
+    //fixtureDef.shape = polygonShape;
+    fixtureDef.shape = shape;
+        fixtureDef.density = 10f;
+        fixtureDef.friction = 1f;
+        fixtureDef.restitution = 0f;
+        bodyDef.gravityScale = 0f;
+        bodyDef.position.set (cameraPosition);
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        //heroBody = world1.createBody (bodyDef);
+        //heroBody.createFixture (fixtureDef);
+    //polygonShape.dispose();
+    shape.dispose();
+    }
+
+    private void createWorld (boolean markBodies, boolean drawAabbs, boolean drawVelocities)
+    {
+        MapObjects mapObjectsSerfaces = map.getLayers()
+                                           .get ("поверхности")
+                                           .getObjects();
+        Rectangle rmP0   = ((RectangleMapObject) mapObjectsSerfaces.get ("Точка0")).getRectangle();
+        Vector2 pinPoint = new Vector2 (rmP0.x, rmP0.y);
+
+        world1 = new World (new Vector2 (0f, -G), !DO_SLEEP);
+        //(DO_SLEEP позволяет использовать спящие объекты: спящий объект не обсчитывается, плюс, если
+        // объект не используется какое-то время, то он заснёт.)
+        debugRenderer = new Box2DDebugRenderer (DRAW_BODIES, DRAW_JOINTS, drawAabbs, DRAW_INACTIVE_BODIES, drawVelocities, !DRAW_CONTACTS);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.gravityScale = 1f;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox (50f, 75f, //<-- полуширина и полувысота.
+                               new Vector2 (0,0),
+                               15 * MathUtils.degreesToRadians);
+        //(Масса арматуры рассчитыается автоматически, исходя из площади и плотности.)
+        fixtureDef.shape = polygonShape;
+        fixtureDef.density = 100f;
+        fixtureDef.friction = 1f;
+        bodyDef.position.set (pinPoint);
+        world1.createBody (bodyDef).createFixture (fixtureDef);
+
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius (20f);
+        circleShape.setPosition (new Vector2 (0f, 0f));
+        fixtureDef.shape = circleShape;
+        fixtureDef.density = 50f;  //< fixtureDef можно переиспользовать (видимо, он служит только для инициализвции арматуры).
+        fixtureDef.restitution = 1f;
+        bodyDef.position.set (pinPoint.x + 100f, pinPoint.y);
+        world1.createBody (bodyDef).createFixture (fixtureDef);
+
+        bodyDef.type = BodyDef.BodyType.StaticBody; //< bodyDef можно переиспользовать (видимо, он служит только для инициализвции тела).
+        fixtureDef.restitution = 0f;
+        fixtureDef.friction = 1f;
+        fixtureDef.density = 1f;
+        for (MapObject mo : mapObjectsSerfaces)
+        {
+            if (mo.getName().equals("Точка0"))
+                continue;
+            Rectangle rmo = ((RectangleMapObject) mo).getRectangle();
+            Object o = mo.getProperties().get("rotation");
+            if (o == null) {
+                polygonShape.setAsBox (rmo.width/2f, rmo.height/2f);
+                bodyDef.position.set (rmo.getCenter (new Vector2()));
+            }
+            else {
+            //Если поверхность наклонная, то удобнее переместить тело из центра контура (shape) в ЛВУгол контура
+            //и повернуть на угол проивоположный тому, который указан в карте (начало отсчёта — ЛНУгол).
+                float degrees = Float.parseFloat (o.toString()) * -1f,
+                      hw      = rmo.width/2f,
+                      hh      = rmo.height/2f;
+                //Перемещаем тело туда, где находится ЛВУгол прямоугольника:
+                bodyDef.position.set (rmo.getCenter (new Vector2()).add (-hw, hh));
+                //Рисуем контур вокруг тела, смещаем центр контура (относительно тела) и поворачиваем контур
+                // вокруг его геометрического центра:
+                polygonShape.setAsBox (hw, hh, //< полуширина и полувысота
+                                       new Vector2 (hw, -hh).rotateDeg (degrees), //< смещение
+                                       degrees * MathUtils.degreesToRadians); //< поворот
+            }
+            fixtureDef.shape = polygonShape;
+            Body body = world1.createBody (bodyDef);
+            body.createFixture (fixtureDef);
+
+            if (markBodies == MARK_BODIES) {
+                circleShape.setRadius (5f); //< теперь это будет маркер расположения тела.
+                circleShape.setPosition (new Vector2 (0f, 0f));
+                fixtureDef.shape = circleShape;
+                body.createFixture (fixtureDef);
+            }
+        }
+        circleShape.dispose();
+        polygonShape.dispose();
     }
 
     private void initHero (float viewportWidth, float viewportHeight)
@@ -123,14 +258,14 @@ public class MyGdxGame extends ApplicationAdapter
      @param mapToScreenOriginOffset смещение оконных координат относительно координат RectangleMapObject. */
     private void initCoins (Vector2 mapToScreenOriginOffset, MapObjects mapObjects)
     {
-        coin60Scale = 0.5f / zoom;
-        animatorCoin60 = new Animator ("coins.png", 6, 1, 10.0f, Animation.PlayMode.LOOP, 194, 24, 62*6, 60, 8);
+        coin60Scale = 0.5f;
+        animatorCoin60 = new Animator ("coins.png", 6, 1, COIN_FPS, Animation.PlayMode.LOOP, 194, 24, 62*6, 60, 8);
 
         coins60 = new LinkedList<>();
 
         //Смещение монетки нужно для того, чтобы точка на карте соответствовала не ЛНуглу монетки,
         // а середине основания.
-        Vector2 coinDrawShift = new Vector2 (-animatorCoin60.tileWidth/2.0f * coin60Scale,
+        Vector2 coinDrawShift = new Vector2 (-animatorCoin60.tileWidth/2.0f * coin60Scale / zoom,
                                              0.0f);
         for (MapObject mo : mapObjects)
         {
@@ -140,7 +275,7 @@ public class MyGdxGame extends ApplicationAdapter
                 Rectangle rm = ((RectangleMapObject) mo).getRectangle();
                 Vector2 pinPoint = new Vector2 (rm.x - mapToScreenOriginOffset.x + coinDrawShift.x,
                                                 rm.y - mapToScreenOriginOffset.y + coinDrawShift.y);
-                coins60.add (new Coin60 (animatorCoin60, pinPoint, coin60Scale, mo.isVisible()));
+                coins60.add (new Coin60 (animatorCoin60, pinPoint, coin60Scale, zoom, mo.isVisible()));
             }
         }
         coins = coins60.size();
@@ -149,18 +284,17 @@ public class MyGdxGame extends ApplicationAdapter
     /** Рисуем строку счёта собранных монеток и изображение монетки рядом с ней. */
     private void initScoreString (Graphics graphics)
     {
-        coinScoreImage = animatorCoin60.getCurrentTile();
-
     //Нам нравится большой шрифт, поэтому не уменьшаем его вслед размеру монетки, а подгоняем к нему размер
     // изображения монетки — рисуем монетку в центре отведённого для неё места (место рассчитано на
     // полноразмерную монетку).
+        coinScoreImage = animatorCoin60.getCurrentTile();
+        float imgSide = coinScoreImage.getRegionWidth() * coin60Scale;
+        float shift = 5f;
+        scoreImagePinPoint = new Vector2 (shift,  graphics.getHeight() -imgSide -shift);
 
-        float shift = animatorCoin60.tileWidth * coin60Scale / 2f;
-        scoreImagePinPoint = new Vector2 (shift, graphics.getHeight() - animatorCoin60.tileHeight + shift);
-
-        lableCrore = new Lable ((int)(64 / zoom)
-                ,(int)((scoreImagePinPoint.x + animatorCoin60.tileWidth * coin60Scale)/zoom)
-                ,graphics.getHeight());
+        lableCrore = new Lable ((int)(80 * coin60Scale),
+                                (int)(scoreImagePinPoint.x + animatorCoin60.tileWidth * coin60Scale),
+                                graphics.getHeight());
     }
 //--------------------------------------------------------------------------------------------
     @Override public void render ()
@@ -169,7 +303,6 @@ public class MyGdxGame extends ApplicationAdapter
         Input input = Gdx.input;
         if (input.isKeyPressed (Input.Keys.ESCAPE))
             Gdx.app.exit();
-
         ScreenUtils.clear (0.25f, 0.75f, 0.85f, 1.0f);
 
         float deltaTime = graphics.getDeltaTime();
@@ -178,10 +311,17 @@ public class MyGdxGame extends ApplicationAdapter
         Vector2 delta = readDirectionsKeys (input);
         if (delta.x != 0.0f || delta.y != 0.0f)
         {
+//world1.step (1f/fps, 3, 3);
+//Vector2 v = heroBody.getPosition();
+//delta.x = v.x - ortoCamera.position.x;
+//delta.y = v.y - ortoCamera.position.y;
+//System.out.printf("%.2f_%.2f | ", delta.x, delta.y);
+
             cameraMoving (delta);
             hero.updateTime (deltaTime);
             ortoCamera.update();
             //hero.setState (AS_RUNNING);
+draw_box2d = true;
         }
         else {
             hero.updateTime (-1.0f);
@@ -203,7 +343,7 @@ public class MyGdxGame extends ApplicationAdapter
         batch.end();
 
         shaper.begin (ShapeRenderer.ShapeType.Line);
-        hero.drawShape (shaper, onscreenTextColor/*Color.WHITE*/);
+        hero.drawShape (shaper, onscreenTextColor);
 
 /*        for (int i=0, n=coins60.size();  i < n;  i++) {
             Coin60 coin = coins60.get(i);
@@ -223,6 +363,7 @@ public class MyGdxGame extends ApplicationAdapter
             else coin.drawShape (shaper, Color.WHITE);
         }
         shaper.end();
+        drawWorld();
     }
 
 /** @param delta смещение камеры по осям.  */
@@ -248,6 +389,7 @@ public class MyGdxGame extends ApplicationAdapter
             else {
                 hero.setState (AS_RUNNING);
                 delta.x = hero.step().x;
+//heroBody.setTransform (heroBody.getPosition().add (delta), 0f);
             }
         }
         else
@@ -261,9 +403,10 @@ public class MyGdxGame extends ApplicationAdapter
             else {
                 hero.setState (AS_RUNNING);
                 delta.x = -hero.step().x;
+//heroBody.setTransform (heroBody.getPosition().add (delta), 0f);
             }
         }
-
+    //-------------------------------
         if (input.isKeyJustPressed (Input.Keys.W) || input.isKeyJustPressed (Input.Keys.UP))
         {
             //Если мы на лестнице или перед ней, то — поднимаемся на 1 шаг вверх. (Снова помним о направлении,
@@ -331,21 +474,37 @@ public class MyGdxGame extends ApplicationAdapter
         return false;
     }
 
-    private void drawCoins () {
+    private void drawCoins ()
+    {
         batch.draw (coinScoreImage, scoreImagePinPoint.x, scoreImagePinPoint.y, 0,0,
                     coinScoreImage.getRegionWidth(), coinScoreImage.getRegionHeight(),
-                    coin60Scale, coin60Scale, 0.0f);
+                    coin60Scale, coin60Scale, 0f);
         for (Coin60 coin : coins60)
             if (coin.visible)
                 coin.draw (batch, zoom);
     }
+
+    private void drawWorld ()
+    {
+        //if (draw_box2d)
+            world1.step (1f/fps, 3, 3); //< команда посчитать физику;
+        // параметры: timeStep - прошло времени с последнего обсчёта,
+        //            velocityIterations - ?скорость обсчёта?,
+        //            positionIterations - плотность покрытия единицы длины просчитанными точками.
+        debugRenderer.render (world1, ortoCamera.combined);
+    }
 //--------------------------------------------------------------------------------------------
     @Override public void dispose ()
     {
-        batch.dispose();
         hero.dispose();
         animatorCoin60.dispose();
         lableCrore.dispose();
         shaper.dispose();
+        batch.dispose();
+        //--------------------
+        //body.destroyFixture (fixturePolygon);
+        //body.destroyFixture (fixtureCircle);
+        debugRenderer.dispose();
+        world1.dispose();
     }
 }

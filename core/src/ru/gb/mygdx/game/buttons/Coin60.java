@@ -16,14 +16,14 @@ public class Coin60
     private       float     scale;
     public  final boolean   visible;
 
-    public Coin60 (Animator coinAnimator, Vector2 pPoint, float cScale, boolean visibl)
+    public Coin60 (Animator coinAnimator, Vector2 pPoint, float cScale, float zoom, boolean visibl)
     {
         animator = coinAnimator;
         pinPoint = pPoint;
-        scale    = cScale;
+        scale    = cScale / zoom;
         visible  = visibl;
         rectShape = new Rectangle (pinPoint.x, pinPoint.y,
-                                   animator.tileWidth * scale, animator.tileHeight * scale);
+                                   animator.tileWidth * cScale, animator.tileHeight * cScale);
     }
 
     public void draw (SpriteBatch batch, float zoom)
@@ -36,8 +36,7 @@ public class Coin60
 
     public void drawShape (ShapeRenderer shaper, Color color) {
         shaper.setColor (color);
-        shaper.rect (rectShape.x, rectShape.y,
-                     rectShape.width, rectShape.height);
+        shaper.rect (rectShape.x, rectShape.y, rectShape.width, rectShape.height);
     }
 
     public void setScale (float factor) {

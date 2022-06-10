@@ -12,11 +12,13 @@ public class Lable
     private final BitmapFont bitmapFont;
     private final int offsetX, offsetY;
 
-    public Lable (int siz, int lableOffsetX, int lableOffsetY) {
-        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("Gabriola.ttf"));
+    public Lable (int siz, int lableOffsetX, int lableOffsetY)
+    {
+        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator (Gdx.files.internal("Gabriola.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.size = siz;
         fontParameter.characters = "0123456789ЙЦУКЕНГШЩЗХЪЖДЛОРПАВЫФЯЧСМИТЬБЮЁ йцукенгшщзхъждлорпавыфячсмитьбюё.,!:;?—-+«»()/*\\";
+
         bitmapFont = fontGenerator.generateFont (fontParameter);
         bitmapFont.setColor (onscreenTextColor);
         offsetX = lableOffsetX;

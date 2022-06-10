@@ -33,7 +33,7 @@ public class Hero
         jump = new Vector2 (heroStep.x, heroStep.y);
         jump.scl (8.0f);
 
-        //                                         c  r  fps            mode                x0  y0  w     h   n
+        //                                         c  r  fps            mode               x0   y0  w     h   n
         animatorRunning  = new Animator (fileName, 4, 2, 15, Animation.PlayMode.LOOP,   137    , 0, 256, 196, 8);
         animatorStanding = new Animator (fileName, 1, 1, 15, Animation.PlayMode.NORMAL,   0    , 0,  64,  98, 1);
         animatorJumping  = new Animator (fileName, 1, 1, 15, Animation.PlayMode.NORMAL, 137+128, 0,  64,  98, 1);
@@ -44,7 +44,8 @@ public class Hero
         pinPoint.x -= dimentionHero.width / 2.0f / zoom;
         pinPoint.y -= dimentionHero.height / 2.0f / zoom;
         setState (AS_STANDING);
-        rectShape = new Rectangle (pinPoint.x * zoom, pinPoint.y * zoom, dimentionHero.width, dimentionHero.height);
+        rectShape = new Rectangle (pinPoint.x * zoom, pinPoint.y * zoom,
+                                   dimentionHero.width, dimentionHero.height);
         state     = initialState;
         direction = dir;
     }
