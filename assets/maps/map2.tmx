@@ -74,23 +74,23 @@
   </object>
  </objectgroup>
  <objectgroup id="10" name="поверхности">
-  <object id="14" name="Пов1" x="816" y="1280" width="320" height="1"/>
-  <object id="15" name="Пов2" x="1136.81" y="1280.19" width="89" height="30" rotation="-45"/>
-  <object id="16" name="Пов3" x="1200.93" y="1216.15" width="364" height="1"/>
-  <object id="17" name="Пов4" x="1425" y="1343" width="1198.41" height="1"/>
-  <object id="18" name="Пов5" x="16" y="1232" width="574" height="1"/>
-  <object id="19" name="Пов6" x="656" y="1056" width="176" height="1"/>
-  <object id="20" name="Пов7" x="912" y="944" width="176" height="1"/>
-  <object id="21" name="Пов8" x="1168" y="832" width="176" height="1"/>
-  <object id="22" name="Пов9" x="1360" y="976" width="176" height="1"/>
-  <object id="23" name="Пов10" x="1712" y="1152" width="192" height="1"/>
-  <object id="24" name="Пов11" x="1632" y="1056" width="127" height="1"/>
-  <object id="25" name="Пов12" x="1807" y="990" width="95" height="1"/>
-  <object id="26" name="Пов13" x="1504" y="864" width="143" height="1"/>
-  <object id="27" name="Пов14" x="1712.27" y="900" width="127.727" height="1"/>
+  <object id="14" name="Пов1" x="816" y="1280" width="320" height="93"/>
+  <object id="15" name="Пов2" x="1136.81" y="1280.19" width="89" height="1" rotation="-45"/>
+  <object id="16" name="Пов3" x="1200.93" y="1216.15" width="364" height="6"/>
+  <object id="17" name="Пов4" x="1425" y="1343" width="1198.41" height="29"/>
+  <object id="18" name="Пов5" x="16" y="1232" width="574" height="32.6667"/>
+  <object id="19" name="Пов6" x="656" y="1056" width="176" height="30.75"/>
+  <object id="20" name="Пов7" x="912" y="944" width="176" height="31"/>
+  <object id="21" name="Пов8" x="1168" y="832" width="176" height="30.75"/>
+  <object id="22" name="Пов9" x="1360" y="976" width="176" height="30.5"/>
+  <object id="23" name="Пов10" x="1692" y="1152" width="210.75" height="7.875"/>
+  <object id="24" name="Пов11" x="1632" y="1056" width="127" height="8.375"/>
+  <object id="25" name="Пов12" x="1807" y="990" width="95" height="11"/>
+  <object id="26" name="Пов13" x="1504" y="864" width="143" height="6.63636"/>
+  <object id="27" name="Пов14" x="1712.27" y="900" width="127.727" height="9.18182"/>
   <object id="31" name="Точка0" x="912.333" y="1057.33">
    <point/>
   </object>
-  <object id="35" name="Пов100500" x="1566" y="1218" width="100" height="20" rotation="25"/>
+  <object id="35" name="Пов100500" x="1567.88" y="1218.38" width="100" height="1" rotation="25"/>
  </objectgroup>
 </map>

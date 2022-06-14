@@ -1,8 +1,6 @@
 package ru.gb.mygdx.game;
 
-import static ru.gb.mygdx.game.MyGdxGame.fps;
-import static ru.gb.mygdx.game.MyGdxGame.wndHeight;
-import static ru.gb.mygdx.game.MyGdxGame.wndWidth;
+import static ru.gb.mygdx.game.Constants.*;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;

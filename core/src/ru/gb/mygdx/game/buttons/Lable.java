@@ -1,6 +1,6 @@
 package ru.gb.mygdx.game.buttons;
 
-import static ru.gb.mygdx.game.MyGdxGame.onscreenTextColor;
+import static ru.gb.mygdx.game.Constants.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,10 +14,10 @@ public class Lable
 
     public Lable (int siz, int lableOffsetX, int lableOffsetY)
     {
-        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator (Gdx.files.internal("Gabriola.ttf"));
+        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator (Gdx.files.internal (FILENAME_FONT));
         FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         fontParameter.size = siz;
-        fontParameter.characters = "0123456789ЙЦУКЕНГШЩЗХЪЖДЛОРПАВЫФЯЧСМИТЬБЮЁ йцукенгшщзхъждлорпавыфячсмитьбюё.,!:;?—-+«»()/*\\";
+        fontParameter.characters = CHAR_SET;
 
         bitmapFont = fontGenerator.generateFont (fontParameter);
         bitmapFont.setColor (onscreenTextColor);
