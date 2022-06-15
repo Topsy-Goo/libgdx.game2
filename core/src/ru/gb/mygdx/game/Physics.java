@@ -1,6 +1,5 @@
 package ru.gb.mygdx.game;
 
-import static java.lang.String.format;
 import static ru.gb.mygdx.game.Constants.*;
 
 import com.badlogic.gdx.graphics.Camera;
@@ -22,7 +21,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import java.util.List;
-
 
 public class Physics implements Disposable
 {
