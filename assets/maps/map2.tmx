@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.5" orientation="orthogonal" renderorder="right-down" width="165" height="108" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="37">
+<map version="1.8" tiledversion="1.8.5" orientation="orthogonal" renderorder="right-down" width="165" height="108" tilewidth="16" tileheight="16" infinite="0" nextlayerid="11" nextobjectid="43">
  <tileset firstgid="1" name="rLJjmOe" tilewidth="16" tileheight="16" tilecount="1680" columns="56">
   <image source="rLJjmOe.png" width="896" height="480"/>
  </tileset>
@@ -38,59 +38,205 @@
    eJzt3Mlz5HUdx+FmyHQ6S3e6s2+9d9wvekMvw0HZQXb8D9zOqLghZt/Xzr4nV6sAdz2JAv4XXgHB9aJVWj4IVU5NRchAhswwn1fVUz1dlXR1/+o93/xySSIRRVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURefbrRcTT1/gFs77vUTRm33OFj/Lbbx6SyLxGk/ect7vKoreqnIhkajyo9hkdB31rD0+9wFssuGuROIiSRpJ0UQzLbSSJkMbWXK000EnXXTTQy999DPAIHkKFClRpkKVGkN3XfvPGd04DdvDCKOMMc4Ek0wxzQyzzDHPAossscwKdVZZY50NNtlimx122WOfAw454jg2GV1Ww93OSZI0kqKJZlpoJU2GNrLkaKeDTrropode+uhngEHyFChSokyFKjWG7j7vqxBdTw3bwwijjDHOBJNMMc0Ms8wxzwKLLLHMCnVWWWOdDTbZYpsddtljnwMOOeI4NhldVsM9zkmSNJKiiWZaaCVNhjay5Ging0666KaHXvroZ4BB8hQoUqJMhSo1hu4576twc/UPv6f88zr+/XnYHkYYZYxxJphkimlmmGWOeRZYZIllVqizyhrrbLDJFtvssMse+xxwyBHHsckPtE9fSCQ+c+G838X/r+Fe5yRJGknRRDMttJImQxtZcrTTQSdddNNDL330M8AgeQoUKVGmQpUaQ/ee91WIrqeG7WGEUcYYZ4JJpphmhlnmmGeBRZZYZoU6q6yxzgabbLHNDrvssc8BhxxxHJv80FRP2QFrqff+Gg33OSdJ0kiKJpppoZU0GdrIkqOdDjrpopseeumjnwEGyVOgSIkyFarUGLrv7K5JdL69aIsv8fL72OSwPYwwyhjjTDDJFNPMMMsc8yywyBLLrFBnlTXW2WCTLbbZYZc99jngkCOOY5PRZTXc75wkSSMpmmimhVbSZGgjS452Ouiki2566KWPfgYYJE+BIiXKVKhSY+j+874K0fXUsD2MMMoY40wwyRTTzDDLHPMssMgSy6xQZ5U11tlgky222WGXPfY54JAjjmOT59oTFxOJL108+9d99tZE4jmev/Xqvq/hAeckSRpJ0UQzLbSSJkMbWXK000EnXXTTQy999DPAIHkKFClRpkKVGkMPnP31iM6/V2zxVV67yk0O28MIo4wxzgSTTDHNDLPMMc8CiyyxzAp1VlljnQ022WKbHXbZY58DDjniy5cSia/wVb7G1y+d+eWJ3qGXnZG/vwbnZLnB2UO14eq+r+GLzkmSNJKiiWZaaCVNhjay5Ging0666KaHXvroZ4BB8hQoUqJMhSo1fnMpkXiB3/I7Xrx01lcnupEatokRRhljnAkmmWKaGWaZY54FFllimRXqrLLGOhtsssU2O+yyxz4HHHL05m5vt1sKFCndft5XJbqaXkol/rDKWb1ew4POSZI0kqKJZlpoJU2GNrLkaKeDTrropode+uhngEHyFChSokyFKjWetMFv8E2+xVOxyRuqF+2xfspNvn5HIvHGHe/8NcM2McIoY4wzwSRTTDPDLHPMs8AiSyyzQp1V1lhng0222GaHXfbY54BDjjh+8AwuTPTfnsn6f+3e8Cm+zXf4Lt/j+yc8Ps0PeIYfMsyS11jOXpv39y97/Pe7bLLhIeckSRpJ0UQzLbSSJkMbWXK000EnXXTTQy999DPAIHkKFClRpkKVGkMPXZvPf7P2rF09x/P8mJ/wU352wuPP+QW/5Ff8mheu0R7fLH2nLd35zl8zbA8jjDLGOBNMMsU0M8wyxzwLLLLEMivUWWWNdTbYZIttdthlj30OOOSI49jkmfaKXb3Ka/yR13mDP53w+Gf+wl/5G3+/Br9/X17eHgvvssmGh52TJGkkRRPNtNBKmgxtZMnRTgeddNFND7300c8Ag+QpUKREmQpVagw9fG2vw81WOen6UqXGEB/hoyc8foyP8wk+yaeS1/a9nep+0h5GGGWMcSaYZIppZphljnkWWGSJZVaos8oa62ywyRbb7LDLHvsccMgRx++yydsy/3PS8+jkPp9LJL7AHbm3nt/l8W7u4V7u4/7cB/ueTnU/+YhzkiSNpGiimRZaSZOhjSw52umgky666aGXPvoZYJA8BYqUKFOhSo2hR073ea7cYGzyxutU95P2MMIoY4wzwSRTTDPDLHPMs8AiSyyzQp1V1lhng0222GaHXfbY54BDjjiOTd40nep+8lHnJEkaSdFEMy20kiZDG1lytNNBJ11000MvffQzwCB5ChQpUaZClRpDj57u85y0ydjljdWp7iftYYRRxhhngkmmmGaGWeaYZ4FFllhmhTqrrLHOBptssc0Ou+yxzwGHHHF8yk2eVGzyxupU95OPOSdJ0kiKJpppoZU0GdrIkqOdDjrpopseeumjnwEGyVOgSIkyFarUGHrsvX/G2OT134yf1bNv/7w+1f2kPYwwyhjjTDDJFNPMMMsc8yywyBLLrFBnlTXW2WCTLbbZYZc99jngkCOOY5PXbQsXE0/Pv8+/9bdtgztv7/DK+8lN/966YqMNjzsnSdJIiiaaaaGVNBnayJKjnQ466aKbHnrpo58BBslToEiJMhWq1Bh6/P184ujD1rA9jDDKGONMMMkU08wwyxzzLLDIEsusUGeVNdbZYJMtttlhlz32OeCQI47f3uSVz6Obs4YnnJMkaSRFE8200EqaDG1kydFOB5100U0PvfTRzwCD5ClQpESZClVqDD3x1nu58nkURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURVEURdFZ9h9kZRV7
   </data>
  </layer>
- <objectgroup id="9" name="Монетки">
-  <object id="1" name="Старт камеры" x="1056" y="1232">
-   <point/>
+ <objectgroup id="10" name="surfaces">
+  <object id="14" name="Serface1" x="816" y="1280" width="320" height="93">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="2" name="Монетка1" x="1484.17" y="1338.5">
-   <point/>
+  <object id="15" name="Serface2" x="1136.81" y="1280.19" width="89" height="15" rotation="-45">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="3" name="Монетка2" x="1849" y="1148">
-   <point/>
+  <object id="16" name="Serface3" x="1200.93" y="1216.15" width="364" height="6">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="4" name="Монетка3" x="1724" y="1149">
-   <point/>
+  <object id="17" name="Serface4" x="1425" y="1343" width="1198.41" height="29">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="5" name="Монетка4" x="1853.33" y="989.667">
-   <point/>
+  <object id="18" name="Serface5" x="16" y="1232" width="574" height="32.6667">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="6" name="Монетка5" x="1449.33" y="970">
-   <point/>
+  <object id="19" name="Serface6" x="656" y="1056" width="176" height="30.75">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="0"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="7" name="Монетка6" x="1259" y="825.667">
-   <point/>
+  <object id="20" name="Serface7" x="912" y="944" width="176" height="31">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="0"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="8" name="Монетка7" x="998.667" y="936.666">
-   <point/>
+  <object id="21" name="Serface8" x="1168" y="832" width="176" height="30.75">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="0"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="9" name="Монетка8" x="705.333" y="1049.67">
-   <point/>
+  <object id="22" name="Serface9" x="1360" y="976" width="176" height="30.5">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="0"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="11" name="Монетка9" x="1755" y="901">
-   <point/>
+  <object id="23" name="Serface10" x="1692" y="1152" width="210.75" height="7.875">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="0"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
   </object>
-  <object id="12" name="Монетка10" x="1798.06" y="901">
-   <point/>
+  <object id="24" name="Serface11" x="1632" y="1056" width="127" height="8.375">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="0"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="25" name="Serface12" x="1807" y="990" width="95" height="11">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="0"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="26" name="Serface13" x="1504" y="864" width="143" height="6.63636">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="0"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="27" name="Serface14" x="1712.27" y="900" width="127.727" height="9.18182">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="0"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="0"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="35" name="Serface100500" x="1567.88" y="1218.38" width="100" height="15" rotation="25">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="1"/>
+    <property name="gravityscale" type="float" value="1"/>
+    <property name="restitution" type="float" value="0"/>
+   </properties>
+  </object>
+  <object id="37" name="Hero" x="910.333" y="1180.17" width="98" height="98">
+   <properties>
+    <property name="bodytype" value="DynamicBody"/>
+    <property name="density" type="float" value="0.01"/>
+    <property name="friction" type="float" value="0"/>
+    <property name="gravityscale" type="float" value="5"/>
+    <property name="restitution" type="float" value="0.5"/>
+   </properties>
+   <ellipse/>
+  </object>
+  <object id="40" name="TestSquere1" x="1112" y="1002.46" width="29.3333" height="58.2051">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.25"/>
+    <property name="gravityscale" type="float" value="35"/>
+    <property name="restitution" type="float" value="0.5"/>
+   </properties>
+  </object>
+  <object id="41" name="TestSphere1" x="1153" y="999.333" width="32.6667" height="32">
+   <properties>
+    <property name="bodytype" value="StaticBody"/>
+    <property name="density" type="float" value="1"/>
+    <property name="friction" type="float" value="0.25"/>
+    <property name="gravityscale" type="float" value="45"/>
+    <property name="restitution" type="float" value="0.5"/>
+   </properties>
+   <ellipse/>
   </object>
  </objectgroup>
- <objectgroup id="10" name="поверхности">
-  <object id="14" name="Пов1" x="816" y="1280" width="320" height="93"/>
-  <object id="15" name="Пов2" x="1136.81" y="1280.19" width="89" height="1" rotation="-45"/>
-  <object id="16" name="Пов3" x="1200.93" y="1216.15" width="364" height="6"/>
-  <object id="17" name="Пов4" x="1425" y="1343" width="1198.41" height="29"/>
-  <object id="18" name="Пов5" x="16" y="1232" width="574" height="32.6667"/>
-  <object id="19" name="Пов6" x="656" y="1056" width="176" height="30.75"/>
-  <object id="20" name="Пов7" x="912" y="944" width="176" height="31"/>
-  <object id="21" name="Пов8" x="1168" y="832" width="176" height="30.75"/>
-  <object id="22" name="Пов9" x="1360" y="976" width="176" height="30.5"/>
-  <object id="23" name="Пов10" x="1692" y="1152" width="210.75" height="7.875"/>
-  <object id="24" name="Пов11" x="1632" y="1056" width="127" height="8.375"/>
-  <object id="25" name="Пов12" x="1807" y="990" width="95" height="11"/>
-  <object id="26" name="Пов13" x="1504" y="864" width="143" height="6.63636"/>
-  <object id="27" name="Пов14" x="1712.27" y="900" width="127.727" height="9.18182"/>
-  <object id="31" name="Точка0" x="912.333" y="1057.33">
+ <objectgroup id="9" name="coins">
+  <object id="1" name="CameraStart" x="1231.67" y="1167.67">
    <point/>
   </object>
-  <object id="35" name="Пов100500" x="1567.88" y="1218.38" width="100" height="1" rotation="25"/>
+  <object id="2" name="Coin1" x="1484.17" y="1338.5">
+   <point/>
+  </object>
+  <object id="3" name="Coin2" x="1849" y="1148">
+   <point/>
+  </object>
+  <object id="4" name="Coin3" x="1724" y="1149">
+   <point/>
+  </object>
+  <object id="5" name="Coin4" x="1853.33" y="989.667">
+   <point/>
+  </object>
+  <object id="6" name="Coin5" x="1449.33" y="970">
+   <point/>
+  </object>
+  <object id="7" name="Coin6" x="1259" y="825.667">
+   <point/>
+  </object>
+  <object id="8" name="Coin7" x="998.667" y="936.666">
+   <point/>
+  </object>
+  <object id="9" name="Coin8" x="705.333" y="1049.67">
+   <point/>
+  </object>
+  <object id="11" name="Coin9" x="1755" y="901">
+   <point/>
+  </object>
+  <object id="12" name="Coin10" x="1798.06" y="901">
+   <point/>
+  </object>
  </objectgroup>
 </map>

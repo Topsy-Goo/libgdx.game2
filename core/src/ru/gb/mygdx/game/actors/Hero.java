@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector2;import com.badlogic.gdx.utils.Disposable;
 
 import static ru.gb.mygdx.game.actors.ActorStates.*;
 import static ru.gb.mygdx.game.actors.MoveDirections.*;
@@ -15,7 +15,7 @@ import java.awt.Dimension;
 
 import ru.gb.mygdx.game.Animator;
 
-public class Hero
+public class Hero implements Disposable
 {
     private final Animator animatorRunning, animatorStanding, animatorJumping, animatorClimbing;
     private final Vector2 pinPoint, step, jump;
@@ -25,7 +25,7 @@ public class Hero
     private final Rectangle rectShape;
 
 
-    public Hero (String fileName, Vector2 pointToPinHeroUp, Vector2 heroStep,
+    public Hero (String fileName, Vector2 inWindowPoint, Vector2 heroStep,
                  ActorStates initialState, MoveDirections dir, float zoom)
     {
         scale = 1.0f / zoom;
@@ -40,7 +40,7 @@ public class Hero
         animatorClimbing = new Animator (fileName, 1, 2,  5, Animation.PlayMode.LOOP,   137+ 64, 0,  64, 196, 2);
 
         Dimension dimentionHero = animatorRunning.getTileDimention();
-        pinPoint = pointToPinHeroUp;
+        pinPoint = inWindowPoint;
         pinPoint.x -= dimentionHero.width / 2.0f / zoom;
         pinPoint.y -= dimentionHero.height / 2.0f / zoom;
         setState (AS_STANDING);
@@ -81,8 +81,8 @@ public class Hero
         Animator animator = null;
         switch (state)
         {
-            //case AS_STANDING:       animator = animatorStanding;  System.out.print("S");
-            //    break;
+            case AS_STANDING:       animator = animatorStanding;  //System.out.print("S");
+                break;
             case AS_RUNNING:        animator = animatorRunning;   //System.out.print("R");
                 break;
             case AS_JUMPING_FORTH:  animator = animatorJumping;   //System.out.print("Jf");
@@ -91,7 +91,7 @@ public class Hero
                 break;
             case AS_CLIMBING:       animator = animatorClimbing;  //System.out.print("C");
                 break;
-            default:                animator = animatorStanding;  //System.out.print("S");
+            default:   throw new RuntimeException("*** Unknown hero state. ***");
         }
         return animator;
     }
@@ -126,7 +126,7 @@ public class Hero
 
     public Rectangle shape () { return rectShape; }
 
-    public void dispose () {
+    @Override public void dispose () {
         animatorRunning.dispose();
         animatorStanding.dispose();
         animatorJumping.dispose();

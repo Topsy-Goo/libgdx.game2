@@ -4,10 +4,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Disposable;
 
 import java.awt.Dimension;
 
-public class Animator
+public class Animator implements Disposable
 {
     private final Texture texture;
     private final Animation<TextureRegion> animation;
@@ -49,8 +50,6 @@ public class Animator
 
     public TextureRegion getCurrentTile () {    return animation.getKeyFrame (time);    }
 
-    public void dispose () {    texture.dispose();    }
-
     public boolean isFinished () {
         // Показывает, является ли последним тайл, соответствующий текущему времени.
         return animation.isAnimationFinished (time);
@@ -61,4 +60,6 @@ public class Animator
     }
 
     public Dimension getTileDimention () {    return new Dimension (tileWidth, tileHeight);    }
+
+    @Override public void dispose () {    texture.dispose();    }
 }
