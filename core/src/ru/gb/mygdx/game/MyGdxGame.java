@@ -189,7 +189,7 @@ public class MyGdxGame extends ApplicationAdapter
 //--------------------------------------------------------------------------------------render
     @Override public void render ()
     {
-        ScreenUtils.clear (0.25f, 0.75f, 0.85f, 1.0f);
+        ScreenUtils.clear (clearScreenColor);
         processUserInput();     //< считываем пользовательский ввод и вычисляем состояние персонажа.
         //drawBackground (batch);
         ortoMapRenderer.setView (ortoCamera);

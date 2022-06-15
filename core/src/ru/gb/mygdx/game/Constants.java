@@ -18,7 +18,9 @@ public final class Constants
         MARK_RADIUS = 0f,
         MARK_RADIUS_MIN = 1f
         ;
-    public static final Color onscreenTextColor = new Color (0.7f, 1.0f, 0.9f, 1.0f);
+    public static final Color
+        onscreenTextColor = new Color (0.7f, 1.0f, 0.9f, 1.0f),
+        clearScreenColor = new Color (0.25f, 0.75f, 0.85f, 1.0f);
 
     public static final Vector2 heroStep = new Vector2 (4f *FPS_MAX /fps, 4f *FPS_MAX /fps); //< скорость персонажа не должна зависеть от fps.
 
