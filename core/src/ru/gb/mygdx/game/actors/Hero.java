@@ -6,14 +6,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;import com.badlogic.gdx.utils.Disposable;
+import java.awt.Dimension;
+import ru.gb.mygdx.game.Animator;
 
+import static ru.gb.mygdx.game.Constants.*;
 import static ru.gb.mygdx.game.actors.ActorStates.*;
 import static ru.gb.mygdx.game.actors.MoveDirections.*;
-
-import java.awt.Dimension;
-
-import ru.gb.mygdx.game.Animator;
 
 public class Hero implements Disposable
 {
@@ -23,51 +24,74 @@ public class Hero implements Disposable
     private       MoveDirections direction;
     private       float          scale;
     private final Rectangle rectShape;
+    private       Fixture fixture;
+    //private       Body body;
 
 
-    public Hero (String fileName, Vector2 inWindowPoint, Vector2 heroStep,
-                 ActorStates initialState, MoveDirections dir, float zoom)
+    public Hero (String fileName, Vector2 inWindowPoint, ActorStates initialState, MoveDirections dir)
     {
-        scale = 1.0f / zoom;
-        step = heroStep; //< шаг должен зависеть от fps и не должен зависеть от zoom.
-        jump = new Vector2 (heroStep.x, heroStep.y);
-        jump.scl (8.0f);
+        scale = 1.0f / ZOOM;
+        step = new Vector2 (heroStep);
+        jump = new Vector2 (heroStep);
+        jump.x = Math.max (1f, jump.x * STEP_TO_JUMP_FACTOR);
 
-        //                                         c  r  fps            mode               x0   y0  w     h   n
-        animatorRunning  = new Animator (fileName, 4, 2, 15, Animation.PlayMode.LOOP,   137    , 0, 256, 196, 8);
-        animatorStanding = new Animator (fileName, 1, 1, 15, Animation.PlayMode.NORMAL,   0    , 0,  64,  98, 1);
-        animatorJumping  = new Animator (fileName, 1, 1, 15, Animation.PlayMode.NORMAL, 137+128, 0,  64,  98, 1);
-        animatorClimbing = new Animator (fileName, 1, 2,  5, Animation.PlayMode.LOOP,   137+ 64, 0,  64, 196, 2);
+        animatorRunning  = new Animator (fileName, HERO_COLS, HERO_ROWS, 15, Animation.PlayMode.LOOP,
+                                         TEX_OFFS_X,        //< ЛВУгол фрагмента текстуры
+                                         TEX_OFFS_Y,        //< ЛВУгол фрагмента текстуры
+                                         HERO_COLS * HERO_W,    //< ширина фрагмента текстуры
+                                         HERO_ROWS * HERO_H,    //< высота фрагмента текстуры
+                                         8);                    //< количество изображений во фрагменте (может отличаться от rows * cols).
+        animatorStanding = new Animator (fileName, 1, 1, 15, Animation.PlayMode.NORMAL,
+                                         0,
+                                         TEX_OFFS_Y,
+                                         HERO_W,
+                                         HERO_H,
+                                         1);
+        animatorJumping  = new Animator (fileName, 1, 1, 15, Animation.PlayMode.NORMAL,
+                                         2* HERO_W +TEX_OFFS_X,
+                                         TEX_OFFS_Y,
+                                         HERO_W,
+                                         HERO_H,
+                                         1);
+        animatorClimbing = new Animator (fileName, 1, 2,  5, Animation.PlayMode.LOOP,
+                                         HERO_W +TEX_OFFS_X,
+                                         TEX_OFFS_Y,
+                                         HERO_W,
+                                         HERO_ROWS * HERO_H,
+                                         2);
 
         Dimension dimentionHero = animatorRunning.getTileDimention();
         pinPoint = inWindowPoint;
-        pinPoint.x -= dimentionHero.width / 2.0f / zoom;
-        pinPoint.y -= dimentionHero.height / 2.0f / zoom;
+        pinPoint.x -= dimentionHero.width / 2.0f / ZOOM;
+        pinPoint.y -= dimentionHero.height / 2.0f / ZOOM;
         setState (AS_STANDING);
-        rectShape = new Rectangle (pinPoint.x * zoom, pinPoint.y * zoom,
+        rectShape = new Rectangle (pinPoint.x * ZOOM, pinPoint.y * ZOOM,
                                    dimentionHero.width, dimentionHero.height);
         state     = initialState;
         direction = dir;
     }
+//----------------- геттеры и сеттеры ----------------------------------
 
-    public Vector2 pinPoint () {   return pinPoint;   }
+    public Vector2 getPinPoint () {   return pinPoint;   }
 
-    public Vector2 step () {   return step;   }
+    public Vector2 getStep () {   return step;   }
 
-    public Vector2 jump () {   return jump;   }
+    public Vector2 getJump () {   return jump;   }
 
     public ActorStates getState () { return state; }
+    public void setState (ActorStates value) {    if (value != null)   state = value;    }
+
+    //public void setBody (Body value) {   body = value;   }
 
     public MoveDirections getDirection () { return direction; }
+    public void setDirection (MoveDirections value) {    if (value != null)    direction = value;    }
 
-    public void setState (ActorStates newState) {
-        if (newState != null)
-            state = newState;
-    }
+    public void setFixture (Fixture value) {   fixture = value;   }
+    public Fixture getFixture () {    return fixture;    }
+//----------------------------------------------------------------------
 
-    public void setDirection (MoveDirections newDirection) {
-        if (newDirection != null)
-            direction = newDirection;
+    public void startFalling () {
+        setState (AS_FALLING);
     }
 
     public void updateTime (float deltaTime)
@@ -77,7 +101,8 @@ public class Hero implements Disposable
             animator.updateTime (deltaTime);
     }
 
-    private Animator currentStateAnimator () {
+    private Animator currentStateAnimator ()
+    {
         Animator animator = null;
         switch (state)
         {
@@ -90,6 +115,8 @@ public class Hero implements Disposable
             case AS_JUMPING_UP:     animator = animatorJumping;   //System.out.print("Ju");
                 break;
             case AS_CLIMBING:       animator = animatorClimbing;  //System.out.print("C");
+                break;
+            case AS_FALLING:        animator = animatorRunning;   //System.out.print("F");
                 break;
             default:   throw new RuntimeException("*** Unknown hero state. ***");
         }
@@ -119,12 +146,12 @@ public class Hero implements Disposable
         shaper.rect (rectShape.x, rectShape.y, rectShape.width, rectShape.height);
     }
 
+    public Rectangle shape () { return rectShape; }
+
     public void setScale (float factor) {
         if (factor > 0.0f)
             scale = factor;
     }
-
-    public Rectangle shape () { return rectShape; }
 
     @Override public void dispose () {
         animatorRunning.dispose();

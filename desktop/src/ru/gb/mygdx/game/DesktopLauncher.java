@@ -11,6 +11,7 @@ public class DesktopLauncher {
     public static void main (String[] arg)
     {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setWindowPosition (10, 10);  //< координаты клиентской области окна относительно рабочего стола.
         config.setWindowedMode (wndWidth, wndHeight);
         config.setResizable (false);
         config.setForegroundFPS (fps);
