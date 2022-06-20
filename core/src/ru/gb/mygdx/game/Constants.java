@@ -27,7 +27,7 @@ public final class Constants
         ,G = 9.81f
         ,COIN_FPS = 10.0f
         ,PINKBOMB_FPS = 10.0f
-        ,MARK_RADIUS = 0f//5f//
+        ,MARK_RADIUS = 5f//0f//
         ,MARK_RADIUS_MIN = 2f
 
         ,HERO_FOOTSENSOR_HH = 2f /* * STEP*/

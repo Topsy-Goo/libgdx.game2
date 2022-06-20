@@ -11,8 +11,7 @@ import ru.gb.mygdx.game.Animator;
 import java.util.Iterator;
 import java.util.Random;
 
-import static ru.gb.mygdx.game.Constants.PINKB_W;import static ru.gb.mygdx.game.Constants.WAKE;
-import static ru.gb.mygdx.game.Constants.ZOOM;import static ru.gb.mygdx.game.Constants.pinkBombScale;
+import static ru.gb.mygdx.game.Constants.*;
 
 public class PinkBomb
 {
@@ -24,7 +23,7 @@ public class PinkBomb
     public  final Object    triggerObject;
     private       Fixture   footSensor, aroundSensor;
     public  final String    name;
-    public        boolean   aroundSensorTriggered, footSensorTriggered, jumping;
+    public        boolean   aroundSensorTriggered, footSensorTriggered, jumping, safeCollision;
     public  final Random random = new Random (47);
 
 
@@ -53,8 +52,18 @@ public class PinkBomb
     public void setAroundSensor (Fixture f) {   aroundSensor = f;   }
     public Fixture getAroundSensor () {   return aroundSensor;   }
 
+    public void setSafeCollision (boolean value) {
+        if (value)
+            safeCollision = true;
+    }
+
     public void draw (SpriteBatch batch, Iterator<PinkBomb> iterator, Vector2 mapToScreenOriginOffset)
     {
+        if (safeCollision && footSensor != null) {
+            inlineDestroyFootsensor();
+            safeCollision = false;
+        }
+
         if (!isSensorsTriggered (iterator))
         {
             Body pinkBody = aroundSensor.getBody();
@@ -70,30 +79,36 @@ public class PinkBomb
         }
     }
 
+    private Body inlineDestroyFootsensor ()
+    {
+        Body pinkBody = footSensor.getBody();
+        pinkBody.destroyFixture (footSensor);
+        setFootSensor (null);
+        footSensorTriggered = false;
+        jumping = true;
+        animator = animatorJumping;
+        return pinkBody;
+    }
+
     private boolean isSensorsTriggered (Iterator<PinkBomb> iterator)
     {
-        Body pinkBody;
         if (aroundSensorTriggered) {
         //Взрываем бомбочку:
-            pinkBody = aroundSensor.getBody();
+            Body pinkBody = aroundSensor.getBody();
             pinkBody.getWorld().destroyBody (pinkBody);
             iterator.remove();
             //бабах!
             return true;
+            //footSensorTriggered = true;
         }
-        else if (footSensorTriggered) {
+        if (footSensorTriggered) {
         //Удаляем footSensor, чтобы бомбочка не размахивала им во время движения:
-            pinkBody = footSensor.getBody();
-            pinkBody.destroyFixture (footSensor);
-            setFootSensor (null);
-            footSensorTriggered = false;
+            Body pinkBody = inlineDestroyFootsensor();
 
         //Придаём бомбочке импульс:
             Vector2 bodyCenter = pinkBody.getLocalCenter();
             pinkBody.setLinearVelocity ((float) Math.random() * 100f -50f,
                                         (float) Math.random() * -50f -50f);
-            jumping = true;
-            animator = animatorJumping;
             return true;
         }
         return false;

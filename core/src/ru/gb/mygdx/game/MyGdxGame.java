@@ -98,7 +98,7 @@ public class MyGdxGame extends ApplicationAdapter
         initHero (viewportWidth / 2.0f, viewportHeight / 2.0f);
         initBackground();
 
-        createWorld (cameraPosition, !DRAW_AABBS, DRAW_VELOCITIES);
+        createWorld (cameraPosition, DRAW_AABBS, DRAW_VELOCITIES);
     }
 
     private void createWorld (Vector2 cameraPosition, boolean drawAabbs, boolean drawVelocities)
