@@ -15,11 +15,11 @@ import static ru.gb.mygdx.game.Constants.*;
 
 public class PinkBomb
 {
+    private       float scale;
     private       Animator  animator;
     private final Animator  animatorWaiting, animatorJumping;
     private final Vector2   pinPoint;
     private final Rectangle rectShape;
-    private       float     scale;
     public  final Object    triggerObject;
     private       Fixture   footSensor, aroundSensor;
     public  final String    name;
@@ -52,14 +52,17 @@ public class PinkBomb
     public void setAroundSensor (Fixture f) {   aroundSensor = f;   }
     public Fixture getAroundSensor () {   return aroundSensor;   }
 
-    public void setSafeCollision (boolean value) {
-        if (value)
-            safeCollision = true;
+    public void safeCollision () {
+        safeCollision = true;
+    }
+
+    public void triggerFootSensor () {
+        footSensorTriggered = footSensor != null;
     }
 
     public void draw (SpriteBatch batch, Iterator<PinkBomb> iterator, Vector2 mapToScreenOriginOffset)
     {
-        if (safeCollision && footSensor != null) {
+        if (safeCollision) {
             inlineDestroyFootsensor();
             safeCollision = false;
         }
@@ -81,12 +84,16 @@ public class PinkBomb
 
     private Body inlineDestroyFootsensor ()
     {
-        Body pinkBody = footSensor.getBody();
-        pinkBody.destroyFixture (footSensor);
-        setFootSensor (null);
-        footSensorTriggered = false;
-        jumping = true;
-        animator = animatorJumping;
+        Body pinkBody = null;
+        if (footSensor != null)
+        {
+            pinkBody = footSensor.getBody();
+            pinkBody.destroyFixture (footSensor);
+            setFootSensor (null);
+            jumping = true;
+            animator = animatorJumping;
+            footSensorTriggered = false;
+        }
         return pinkBody;
     }
 
@@ -99,16 +106,18 @@ public class PinkBomb
             iterator.remove();
             //бабах!
             return true;
-            //footSensorTriggered = true;
         }
         if (footSensorTriggered) {
         //Удаляем footSensor, чтобы бомбочка не размахивала им во время движения:
             Body pinkBody = inlineDestroyFootsensor();
 
         //Придаём бомбочке импульс:
-            Vector2 bodyCenter = pinkBody.getLocalCenter();
-            pinkBody.setLinearVelocity ((float) Math.random() * 100f -50f,
-                                        (float) Math.random() * -50f -50f);
+            if (pinkBody != null) {
+                Vector2 bodyCenter = pinkBody.getLocalCenter();
+                pinkBody.setLinearVelocity ((float) Math.random() *  200f -100f,
+                                            (float) Math.random() * -100f -50f);
+            }
+            footSensorTriggered = false;
             return true;
         }
         return false;
@@ -122,8 +131,25 @@ public class PinkBomb
     public void shift (float deltaX, float deltaY) {
         pinPoint.x -= deltaX;
         pinPoint.y -= deltaY;
-        rectShape.x -= deltaX;
-        rectShape.y -= deltaY;
+        rectShape.x -= deltaX / ZOOM;
+        rectShape.y -= deltaY / ZOOM;
+    }
+
+    public void setScale (float factor, Vector2 mapToScreenOriginOffset) {
+        if (factor > 0.0f) {
+            scale = factor;
+
+            Body pinkBody = aroundSensor.getBody();
+            Vector2 bodyPosition = pinkBody.getPosition();
+            pinPoint.x = bodyPosition.x - mapToScreenOriginOffset.x - PINKB_W/2f * pinkBombScale;
+            pinPoint.y = bodyPosition.y - mapToScreenOriginOffset.y - PINKB_W/2f * pinkBombScale;
+
+            rectShape.x = pinPoint.x / ZOOM;
+            rectShape.y = pinPoint.y / ZOOM;
+            rectShape.setWidth (animator.tileWidth * scale);
+            rectShape.setHeight (animator.tileHeight * scale);
+
+        }
     }
 
     //public boolean isOverlapped (Rectangle other) {   return rectShape.overlaps (other);    }

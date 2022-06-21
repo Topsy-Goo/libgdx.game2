@@ -21,9 +21,9 @@ public final class Constants
         ,PINKB_W = 132  //< размер одной плитки
         ,PINKB_H = 199  //< размер одной плитки
         ;
+    public static float ZOOM = 1f;//2.8f;//0.6f;//1.8f;//0.2f;//
     public static final float
          STEP = 4f
-        ,ZOOM = 0.6f//1//2.8f//1.8f//0.2f//
         ,G = 9.81f
         ,COIN_FPS = 10.0f
         ,PINKBOMB_FPS = 10.0f

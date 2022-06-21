@@ -1,6 +1,6 @@
 package ru.gb.mygdx.game.actors;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx;import com.badlogic.gdx.Graphics;import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,7 +23,7 @@ public class Hero implements Disposable
     private       ActorStates    state;
     private       MoveDirections direction;
     private       float          scale;
-    private final Rectangle rectShape;
+    private       Rectangle rectShape;
     private       Fixture fixture;
     //private       Body body;
 
@@ -65,7 +65,7 @@ public class Hero implements Disposable
         pinPoint.x -= dimentionHero.width / 2.0f / ZOOM;
         pinPoint.y -= dimentionHero.height / 2.0f / ZOOM;
         setState (AS_STANDING);
-        rectShape = new Rectangle (pinPoint.x * ZOOM, pinPoint.y * ZOOM,
+        rectShape = new Rectangle (pinPoint.x, pinPoint.y,
                                    dimentionHero.width, dimentionHero.height);
         state     = initialState;
         direction = dir;
@@ -148,9 +148,26 @@ public class Hero implements Disposable
 
     public Rectangle shape () { return rectShape; }
 
-    public void setScale (float factor) {
-        if (factor > 0.0f)
+    public void setScale (float factor, Vector2 mapToScreenOriginOffset) {
+        if (factor > 0.0f) {
             scale = factor;
+
+            //Body body = fixture.getBody();
+            //Vector2 v = body.getPosition();
+            //pinPoint.x = v.x - mapToScreenOriginOffset.x;
+            //pinPoint.y = v.y - mapToScreenOriginOffset.y;
+
+            Dimension dimentionHero = animatorRunning.getTileDimention();
+            float viewportWidth = Gdx.graphics.getWidth();
+            float viewportHeight = Gdx.graphics.getHeight();
+            pinPoint.x = viewportWidth / 2f - dimentionHero.width / 2.0f / ZOOM;
+            pinPoint.y = viewportHeight / 2f - dimentionHero.height / 2.0f / ZOOM;
+
+            rectShape.x = pinPoint.x;
+            rectShape.y = pinPoint.y;
+            rectShape.setWidth (dimentionHero.width * scale);
+            rectShape.setHeight (dimentionHero.height * scale);
+        }
     }
 
     @Override public void dispose () {

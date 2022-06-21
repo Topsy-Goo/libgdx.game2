@@ -7,7 +7,7 @@ import static ru.gb.mygdx.game.actors.MoveDirections.*;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.audio.Music;import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -44,7 +44,7 @@ import static ru.gb.mygdx.game.Constants.*;
 public class MyGdxGame extends ApplicationAdapter
 {
     private SpriteBatch batch;
-    private Texture  landScape, sky;  //TODO: выбрать пейзаж и небо.
+    private Texture  landScape, sky;
     private TiledMap map;
     private OrthogonalTiledMapRenderer ortoMapRenderer;
     private OrthographicCamera         ortoCamera;
@@ -63,6 +63,8 @@ public class MyGdxGame extends ApplicationAdapter
     private boolean recalc_world;
     private Parabola parabola;
     Vector2 mapToScreenOriginOffset;
+
+    Music music;
 
 //--------------------------------------------------------------------------------------create
     @Override public void create ()
@@ -210,7 +212,7 @@ public class MyGdxGame extends ApplicationAdapter
                 Rectangle rm = ((RectangleMapObject) mo).getRectangle();
                 Vector2 pinPoint = new Vector2 (rm.x - mapToScreenOriginOffset.x + shift.x,
                                                 rm.y - mapToScreenOriginOffset.y + shift.y);
-                coins60.add (new Coin60 (name, animatorCoin60, pinPoint, coin60Scale, mo.isVisible()));
+                coins60.add (new Coin60 (name, animatorCoin60, pinPoint, coin60Scale, mo.isVisible(), rm));
             }
         }
         coins = coins60.size();
@@ -233,19 +235,20 @@ public class MyGdxGame extends ApplicationAdapter
     }
 
     private void initBackground () {
-        //landScape = new Texture ("");
+        landScape = new Texture ("back.jpg");
         //sky = new Texture ("");
     }
 //--------------------------------------------------------------------------------------render
     @Override public void render ()
     {
+        /*Gdx.app.log*/System.out.print("\rZOOM: "+ Float.valueOf(ZOOM).toString());
 /* Принцип, используемый для удерживания героя и его тела в центре экрана: При движении персонажа изменяются
  координаты его тела. Вслед за ними мы двигаем камеру так, чтобы тело оставалось в центре поля зрения камеры
  (ЦПЗК). А персонажа мы просто рисуем в ЦПЗК. ЦПЗК совпадает с центром экрана. */
 
         ScreenUtils.clear (clearScreenColor);
         processUserInput();     //< считываем пользовательский ввод и вычисляем состояние персонажа.
-        //drawBackground (batch);
+        drawBackground (batch);
         ortoMapRenderer.setView (ortoCamera);
         ortoMapRenderer.render (/*backgroundLayers*/); //< рисуем часть карты, попавшую в поле зрения камеры.
         drawBatch (batch);      //< рисуем персонажа, монетки и надписи.
@@ -261,8 +264,16 @@ public class MyGdxGame extends ApplicationAdapter
         if (input.isKeyPressed (Input.Keys.ESCAPE))
             Gdx.app.exit();
 
-        if (input.isKeyJustPressed (Input.Keys.SPACE))
+        if (input.isKeyPressed (Input.Keys.SPACE))
             recalc_world = !recalc_world;
+
+        if (input.isKeyJustPressed (Input.Keys.NUMPAD_ADD))
+        //if (input.isKeyPressed (Input.Buttons.BACK))
+            updateZoom (-0.2f);
+        else
+        if (input.isKeyJustPressed (Input.Keys.NUMPAD_SUBTRACT))
+        //if (input.isKeyPressed (Input.Buttons.FORWARD))
+            updateZoom ( 0.2f);
 
         Vector2 delta = readDirectionsKeys (input);
 
@@ -455,11 +466,11 @@ heroBody.setTransform (heroBody.getPosition().add (delta), 0f);
 
     private void drawBackground (SpriteBatch batch)
     {
-/*  Блоков batch.begin() … batch.end() может быть несколько.
+/*  Блоков batch.begin() … batch.end() может быть несколько.*/
         batch.begin();
-        batch.draw (landScape, 0,0, graphics.getWidth(), graphics.getHeight());
-        batch.draw (sky, 0,0, graphics.getWidth(), graphics.getHeight());
-        batch.end();*/
+        batch.draw (landScape, 0,0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //batch.draw (sky, 0,0, graphics.getWidth(), graphics.getHeight());
+        batch.end();
     }
 
     private void drawBatch (SpriteBatch batch) {
@@ -504,8 +515,26 @@ heroBody.setTransform (heroBody.getPosition().add (delta), 0f);
             pb.drawShape (shaper, Color.WHITE);
         shaper.end();
     }
+
+    private void updateZoom (float zdelta)
+    {
+        ZOOM += zdelta;
+        ortoCamera.zoom = ZOOM;
+        ortoCamera.update();
+        float viewportWidth = Gdx.graphics.getWidth();
+        float viewportHeight = Gdx.graphics.getHeight();
+        mapToScreenOriginOffset = new Vector2 (ortoCamera.position.x - viewportWidth / 2.0f * ZOOM,
+                                               ortoCamera.position.y - viewportHeight / 2.0f * ZOOM);
+        hero.setScale (1f/ZOOM, mapToScreenOriginOffset);
+        for (PinkBomb pb : pinkBombs)
+            pb.setScale (pinkBombScale / ZOOM, mapToScreenOriginOffset);
+        for (Coin60 c : coins60)
+            c.setScale (coin60Scale / ZOOM, mapToScreenOriginOffset);
+    }
 //-------------------------------------------------------------------------------------dispose
     @Override public void dispose () {
+        //music.stop();
+        //music.dispose();
         hero.dispose();
         animatorCoin60.dispose();
         animatorPinkBomb_Waiting.dispose();

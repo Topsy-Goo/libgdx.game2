@@ -35,7 +35,8 @@ public class Physics implements Disposable
     private final BodyDef      bodyDef;
     private final FixtureDef   fixtureDef;
     private       Fixture fixtureHeroFootSensor;
-    private final Set<Fixture> pinkSensors = new HashSet<>();
+    private final Set<Fixture> pinkShapeSensors = new HashSet<>();
+    private final Set<Fixture> pinkFootSensors = new HashSet<>();
     private       Body heroBody;
     private       Hero hero;
 
@@ -109,12 +110,12 @@ public class Physics implements Disposable
         fixtureDef.restitution = 0f;
         fixtureDef.density = 0f;
         fixtureDef.isSensor = true;
-        pinkSensors.add (f = body.createFixture (fixtureDef));
+        pinkFootSensors.add (f = body.createFixture (fixtureDef));
         pink.setFootSensor (f);
         f.setUserData (pink);
 
         fixtureDef.shape = circleShape;
-        pinkSensors.add (f = body.createFixture (fixtureDef));
+        pinkShapeSensors.add (f = body.createFixture (fixtureDef));
         pink.setAroundSensor (f);
         f.setUserData (pink);
     }
@@ -300,18 +301,20 @@ public class Physics implements Disposable
         {
             Fixture fixtA = contact.getFixtureA();
             Fixture fixtB = contact.getFixtureB();
-            boolean footH = false, fixtH = false, pinkA = false, pinkB = false;
+            boolean footH = false, fixtH = false, pinkShapeA = false, pinkShapeB = false;
 
             footH = fixtA == fixtureHeroFootSensor  ||  fixtB == fixtureHeroFootSensor;
             //Возможны множественные одновременные прикосновения, но метод вызывается отдельно для кажого
             // прикосновения. Поэтому footH и fixtH не могут быть истины одновременно.
             fixtH = (!footH) && (fixtA == hero.getFixture()  ||  fixtB == hero.getFixture());
 
-            pinkA = pinkSensors.contains (fixtA);
-            pinkB = pinkSensors.contains (fixtB);
+            pinkShapeA = pinkShapeSensors.contains (fixtA);
+            pinkShapeB = pinkShapeSensors.contains (fixtB);
+            boolean pinkFootA = pinkFootSensors.contains (fixtA);
+            boolean pinkFootB = pinkFootSensors.contains (fixtB);
 
         //Персонаж коснулся нижним сенсором какой-то БЕЗОПАСНОЙ поверхности (фикстуры):
-            if (footH && !pinkA && !pinkB) {
+            if (footH && !pinkShapeA && !pinkShapeB) {
                 if (heroContacts == 0)
                     hero.setState (AS_STANDING);
                 heroContacts ++;
@@ -320,25 +323,28 @@ public class Physics implements Disposable
         //Песонаж коснулся чего-то своими сенсором или фикстурой:
             if (footH || fixtH) {
                 //Если этим сенсором оказался сенсор бомбочки:
-                if (pinkA) {
-                    pinkSensorDangerContact (fixtA);
-                }
+                if (pinkShapeA)  pinkSensorDangerContact (fixtA);
                 else
-                if (pinkB) {
-                    pinkSensorDangerContact (fixtB);
-                }
+                if (pinkShapeB)  pinkSensorDangerContact (fixtB);
+                else
+                if (pinkFootA)  pinkTriggerFootSensor (fixtA);
+                else
+                if (pinkFootB)  pinkTriggerFootSensor (fixtB);
             }
             else
         //Сенсор бомбочки БЕЗОПАСНО коснулся чего-то:
-            if (pinkA) {
+            if (pinkShapeA) {
                 pinkSetFying (fixtA);
+                if (pinkFootB)  pinkTriggerFootSensor (fixtB);
             }
             else
-            if (pinkB) {
+            if (pinkShapeB) {
                 pinkSetFying (fixtB);
+                if (pinkFootA)  pinkTriggerFootSensor (fixtA);
             }
         }
 
+    /** Взрываем бомбочку. */
         private void pinkSensorDangerContact (Fixture fpink)
         {
             Object o = fpink.getUserData();
@@ -360,8 +366,18 @@ public class Physics implements Disposable
             PinkBomb pink = (o instanceof PinkBomb) ? (PinkBomb) o : null;
             if (pink == null)
                 return;
-            pink.setSafeCollision (true);
+            pink.safeCollision();
         }
+
+        private void pinkTriggerFootSensor (Fixture fpink)
+        {
+            Object o = fpink.getUserData();
+            PinkBomb pink = (o instanceof PinkBomb) ? (PinkBomb) o : null;
+            if (pink == null)
+                return;
+            pink.triggerFootSensor();
+        }
+
 
         //Вызывается для каждой пары пересекающихся фикстур и для каждой бывшей точки пересечения.
         //Фикстуры именуются как A и B.
