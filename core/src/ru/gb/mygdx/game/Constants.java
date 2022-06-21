@@ -30,7 +30,7 @@ public final class Constants
         ,MARK_RADIUS = 5f//0f//
         ,MARK_RADIUS_MIN = 2f
 
-        ,HERO_FOOTSENSOR_HH = 2f /* * STEP*/
+        ,HERO_FOOTSENSOR_HH = 2f
         ,HERO_FOOTSENSOR_HW = 20f
 
         ,JUMP_DISTANCE = 100f   //< Длина прыжка на ровной поверхности (на параболе будет выбрана точка, плечо которой рано половине длины прыжка; из этой точки персонаж начинает прыжок или падение).
@@ -48,7 +48,7 @@ public final class Constants
     //public static final float FALLING_STEP_MAX = heroStep.y;
 
     public static final boolean
-         DEBUG = true
+         DEBUG = true// false//
         ,SLEEPABLE_WORLD    = !true
         ,WAKE        = true
         ,DRAW_BODIES          = true
@@ -64,6 +64,13 @@ public final class Constants
         ,FILENAME_TEXTURE_PINKBOMB = "pinkbomb.png"
         ,FILENAME_TEXTURE_HERO  = "mario02.png"
         ,FILENAME_FONT_ONSCREEN = "Gabriola.ttf"
+        ,FILENAME_LANDSCAPE = "back.jpg"
+        ,FILENAME_MUSIC = "ЗапускWindows.WAV"
+        ,FILENAME_SOUND_COIN = "CHIMES.WAV"
+        ,FILENAME_STARTSCREEN_TEXTURE = "start-screen.png"
+        ,FAILENAME_IMAGE_GAME = "game.png"
+        ,FAILENAME_IMAGE_GAMEOVER = "game-over.png"
+
         ,LAYERNAME_COINS  = "coins"
         ,LAYERNAME_GROUND = "surfaces"
         ,LAYERNAME_TRAPS = "ловушки"

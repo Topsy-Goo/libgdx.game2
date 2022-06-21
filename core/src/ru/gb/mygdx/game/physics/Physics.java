@@ -62,9 +62,7 @@ public class Physics implements Disposable
         //            positionIterations - плотность покрытия единицы длины просчитанными точками.
     }
 
-    public void debugDraw (Camera camera) {
-        debugRenderer.render (world1, camera.combined);
-    }
+    public void debugDraw (Camera camera) {    debugRenderer.render (world1, camera.combined);    }
 
 /*    public void addAllDotsToWorldAsObjects (MapObjects mooo, float radiusOfMark) {
         for (MapObject mo : mooo)
@@ -257,7 +255,7 @@ public class Physics implements Disposable
     private FixtureDef createHeroFootSensor ()
     {
         polygonShape.setAsBox (HERO_FOOTSENSOR_HW, HERO_FOOTSENSOR_HH,
-                               new Vector2 (0f, -(HERO_H / 2f/* - HERO_FOOTSENSOR_HW*/)),
+                               new Vector2 (0f, -(HERO_H / 2f)),
                                0f);
         fixtureDef.shape = polygonShape;
 
